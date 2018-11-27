@@ -15,7 +15,7 @@ $(TARGET): $(OBJS)
 	$(CC) -m32 -nostdlib -nodefaultlibs -lgcc start.o $? -T linker.ld -o $(TARGET)
 
 finale:
-	$(shell cd ~/Desktop/my_os/)
+	$(shell cd /media/sf_VMShare/git/my_os/)
 	$(shell cp $(TARGET) ./iso/boot/$(TARGET))
 	$(shell grub2-mkrescue iso --output=$(TARGET).iso)
 	$(shell cp $(TARGET).iso /media/sf_VMShare/$(TARGET).iso)
