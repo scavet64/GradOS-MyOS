@@ -1,3 +1,6 @@
+#include "stddef.h"
+#include "stdint.h"
+
 /**
  * Read a byte from the specified port
  */
@@ -32,4 +35,11 @@ unsigned short port_word_in (unsigned short port) {
 
 void port_word_out (unsigned short port, unsigned short data) {
     __asm__("out %%ax, %%dx" : : "a" (data), "d" (port));
+}
+
+inline uint8_t inportb(unsigned short port)
+{
+    char ret;
+    asm volatile ("inb %1, %0" : "=a" (ret) : "Nd" (port));
+    return ret;
 }
