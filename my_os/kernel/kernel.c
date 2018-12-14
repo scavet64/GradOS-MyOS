@@ -1,10 +1,13 @@
-#include "libc/include/string.h"
-#include "libc/include/conversion.h"
-#include "libc/include/strutils.h"
-#include "libc/include/video.h"
-#include "libc/include/typedefs.h"
-#include <stdint.h>
+// #include "libc/include/string.h"
+// #include "libc/include/conversion.h"
+// #include "libc/include/strutils.h"
+// #include "libc/include/video.h"
+// #include "libc/include/typedefs.h"
+// #include <stdint.h>
 //#include "libc/include/keyboard.h"
+
+#include "../drivers/screen.h"
+#include "util.h"
 
 static char *const VGA_MEMORY = (char *)0xb8000;
 static const int VGA_WIDTH = 80;
@@ -49,18 +52,18 @@ void printHelloWorld()
 	// 	j = j + 2;
 	// }
 
-	clear_screen();
+    clear_screen();
 
     /* Fill up the screen */
     int i = 0;
     for (i = 0; i < 24; i++) {
         char str[255];
         int_to_ascii(i, str);
-        print_at(str, 0, i);
+        kprint_at(str, 0, i);
     }
 
-    print_at("This text forces the kernel to scroll. Row 0 will disappear. ", 60, 24);
-    print("And with this text, the kernel will scroll again, and row 1 will disappear too!");
+    kprint_at("This text forces the kernel to scroll. Row 0 will disappear. ", 60, 24);
+    kprint("And with this text, the kernel will scroll again, and row 1 will disappear too!");
 }
 
 // void testUserInput()
@@ -70,22 +73,22 @@ void printHelloWorld()
 // 	print(ctos(out, fromkey));
 // }
 
-void testScreenScroll()
-{
-	clear_screen();
+// void testScreenScroll()
+// {
+// 	clear_screen();
 
-	/* Fill up the screen */
-	int i = 0;
-	for (i = 0; i < 24; i++)
-	{
-		char str[255];
-		int_to_ascii(i, str);
-		print_at(str, 0, i);
-	}
+// 	/* Fill up the screen */
+// 	int i = 0;
+// 	for (i = 0; i < 24; i++)
+// 	{
+// 		char str[255];
+// 		int_to_ascii(i, str);
+// 		print_at(str, 0, i);
+// 	}
 
-	print_at("This text forces the kernel to scroll. Row 0 will disappear. ", 60, 24);
-	print("And with this text, the kernel will scroll again, and row 1 will disappear too!");
-}
+// 	print_at("This text forces the kernel to scroll. Row 0 will disappear. ", 60, 24);
+// 	print("And with this text, the kernel will scroll again, and row 1 will disappear too!");
+// }
 
 int main(void)
 {
