@@ -1,1 +1,5 @@
 *.iso
+
+my_os/\.vscode/
+
+*.o
