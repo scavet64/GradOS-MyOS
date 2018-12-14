@@ -1,13 +1,15 @@
 CC=gcc
 TARGET=myos
-C_FILES=./kernel.c
-OBJS=$(C_FILES:.c=.o)
+BIN=./bin/
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c libc/string/*.c *.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h include/*.h)
+OBJS=$(C_SOURCES:.c=.o)
 
 all compile: $(TARGET)
 all: finale
 .PHONY: all compile clean finale
 
-%.o:
+%.o: %.c ${HEADERS}
 	$(CC) -c $(@:.o=.c) -o $@ -ffreestanding -fno-exceptions -m32
 
 $(TARGET): $(OBJS)
