@@ -68,7 +68,10 @@ char *strncpy(char *dest, const char *src, size_t n);
  * Input - s2: The string to search for
  * Output - Returns the address of s2 within s1.
  */
-char *strstr(char *s1, const char *s2);
+char	*strstr(
+	  const char	*cs,		/* String to search		*/
+	  const char	*ct		/* Substring to locate		*/
+	);
 
 /**
  * Returns the index of a particular character (represented by an int) in a string

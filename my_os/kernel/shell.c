@@ -2,9 +2,11 @@
 #include "../drivers/screen.h"
 #include "../drivers/ports.h"
 #include "../libc/include/string.h"
+#include "../libc/include/strutils.h"
 #include "commands.h"
 #include "util.h"
 #include "stdint.h"
+#include "users.h"
 
 #define BACKSPACE 0x0E
 #define ENTER 0x1C
@@ -42,6 +44,8 @@ const char sc_ascii[] = {'?', '?', '1', '2', '3', '4', '5', '6',
 
 uint8_t runShell()
 {
+    //TEST CODE:
+    addUserData("TEST", "TEST");
 
     while (!isLoggedIn)
     {
@@ -70,6 +74,7 @@ uint8_t runShell()
 
     while (1)
     {
+        // running shell
         scanForInput();
     }
 }
@@ -83,7 +88,6 @@ void getUserNameFromUser()
         if (scankey != lastScanKey)
         {
             lastScanKey = scankey;
-
             if (scankey > SC_MAX)
             {
                 continue;
@@ -119,7 +123,6 @@ void getPasswordFromUser()
         if (scankey != lastScanKey)
         {
             lastScanKey = scankey;
-
             if (scankey > SC_MAX)
             {
                 continue;
@@ -153,7 +156,6 @@ void scanForInput()
     if (scankey != lastScanKey)
     {
         lastScanKey = scankey;
-
         if (scankey > SC_MAX)
         {
             return;
@@ -190,7 +192,7 @@ void handleEnter()
 
 void handleKeystroke(uint8_t scankey)
 {
-    if (strlen(key_buffer) < 255)
+    if (strlen(key_buffer) < 50)
     {
         char letter = sc_ascii[(int)scankey];
         /* Remember that kprint only accepts char[] */
@@ -206,7 +208,7 @@ void handleKeystroke(uint8_t scankey)
 }
 
 /**
- * Process user input. Split the string and dispatch to the correct command
+ * Process user input.
  */
 void userInput(char *input)
 {
@@ -219,17 +221,92 @@ void userInput(char *input)
     //Check login
     if (isLoggedIn)
     {
-        parseCommand(input);
+        // I need to initalize the variable /shrug
+        char clone[50];
+        char *tmp = clone;
+        //char *clone = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        strcpy(tmp, input);
+        parseCommand(tmp);
     }
     else
     {
     }
 
-    kprint("You said: ");
+    kprint("\nYou said: ");
     kprint(input);
     kprint("\n> ");
 }
 
 void parseCommand(char *input)
 {
+    //First trim the user input
+    kprint("\nParsing Command: ");
+    //kprint(input);
+    //input = trim(input);
+    char index[255];
+    char *tmp = index;
+    tmp = strstr(input, " ");
+
+    if(tmp == (char *)0){
+        kprint("\nnot found ");
+        return;
+    }
+
+    kprint("\nstrstr result: ");
+    kprint(tmp);
+    kprint("\n");
+
+    int subLen = strlen(tmp);
+    char str1[123];
+    int_to_ascii(subLen, str1);
+    kprint(str1);
+    kprint("\n");
+
+    int inputLen = strlen(input);
+    int_to_ascii(inputLen, str1);
+    kprint(str1);
+    kprint("\n");
+
+    
+
+    int diff = inputLen - subLen;
+    if (diff <= 0)
+    {
+        // Did not have it
+        kprint("subLen was 0\n");
+        return;
+    }
+
+    int_to_ascii(diff, str1);
+    kprint(str1);
+    kprint("\n");
+
+    char token[255];
+    strncpy(token, input, diff);
+
+    kprint("\nTOKEN: ");
+    kprint(token);
+    kprint("\n");
+
+    // Get the length of the total input
+    // Get the length of the 'sub' string
+    // subtract the two
+    // do strncpy and thats what we want
+
+    //
+
+    // if (index == 0) {
+    //     //No spaces
+    // } else {
+    //     // There was a space detected
+    //     kprint("Space was detected\n");
+
+    //     //Get the first item before the space
+    //     char *dest;
+    //     strncpy(*dest, input, index);
+
+    //     kprint("\n");
+    //     kprint("First User Word:");
+    //     kprint(dest);
+    // }
 }

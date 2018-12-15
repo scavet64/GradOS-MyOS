@@ -61,6 +61,12 @@ void kprint_backspace()
     }
 }
 
+void kprintInt(int num) {
+    char *str;
+    int_to_ascii(num, str);
+    kprint(str);
+}
+
 /**********************************************************
  * Private kernel functions                               *
  **********************************************************/

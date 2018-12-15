@@ -39,6 +39,14 @@ int main(void)
 {
 	kprint("Welcome to my OS :^)\n");
 
+	// // char *clone;
+	// // char *input = "THIS IS SOMETHING";
+	// // strcpy(clone, input);
+
+	// kprint(clone);
+	// kprint("\n");
+	// kprint(input);
+
 	// Show Login Prompt.
 	// user will be stuck here until they login
 
