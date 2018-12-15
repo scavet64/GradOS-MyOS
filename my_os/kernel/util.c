@@ -48,25 +48,25 @@ void backspace(char s[]) {
 
 int countArray(char *array[])
 {
-    kprint("\n");
-    kprint("\n");
+    print("\n");
+    print("\n");
     int i = 0;
     char *tmp = array[i];
     while (strcmp(array[i], "\0") != 0)
     {
         //DEBUG INFORMATION: TODO DELETE
         tmp = array[i];
-        kprint("Index: ");
-        //kprintInt(i);
+        print("Index: ");
+        //printInt(i);
 
         char *str;
         int_to_ascii(i, str);
-        kprint(str);
+        print(str);
 
-        kprint(" Value: ");
-        kprint(tmp);
+        print(" Value: ");
+        print(tmp);
 
-        kprint("\n");
+        print("\n");
         i++;
     }
     return i;
@@ -74,12 +74,12 @@ int countArray(char *array[])
 
 void printArray(char *array[])
 {
-    kprint("\n");
+    print("\n");
     int size = countArray(array);
     int i = 0;
     for (i = 0; i < size; i++)
     {
-        kprint(array[i]);
-        kprint("\n");
+        print(array[i]);
+        print("\n");
     }
 }

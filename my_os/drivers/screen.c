@@ -20,7 +20,7 @@ int get_offset_col(int offset);
  * Print a message on the specified location
  * If col, row, are negative, we will use the current offset
  */
-void kprint_at(char *message, int col, int row)
+void print_at(char *message, int col, int row)
 {
     /* Set cursor if col/row are negative */
     int offset;
@@ -44,18 +44,18 @@ void kprint_at(char *message, int col, int row)
     }
 }
 
-void kprint(char *message)
+void print(char *message)
 {
-    kprint_at(message, -1, -1);
+    print_at(message, -1, -1);
 }
 
 void printLn(char *message)
 {
-    kprint_at(message, -1, -1);
-    kprint_at("\n", -1, -1);
+    print_at(message, -1, -1);
+    print_at("\n", -1, -1);
 }
 
-void kprint_backspace()
+void print_backspace()
 {
     int offset = get_cursor_offset() - 2;
     if (offset >= 0)
@@ -67,10 +67,10 @@ void kprint_backspace()
     }
 }
 
-void kprintInt(int num) {
+void printInt(int num) {
     char *str;
     int_to_ascii(num, str);
-    kprint(str);
+    print(str);
 }
 
 /**********************************************************

@@ -49,13 +49,13 @@ uint8_t runShell()
 
     while (!isLoggedIn)
     {
-        kprint("Please enter your username:\n");
+        print("Please enter your username:\n");
         while (usernameFromUser[0] == '\0')
         {
             getUserNameFromUser();
         }
 
-        kprint("Please enter your password:\n");
+        print("Please enter your password:\n");
         while (passwordFromUser[0] == '\0')
         {
             getPasswordFromUser();
@@ -66,7 +66,7 @@ uint8_t runShell()
 
         if (!isLoggedIn)
         {
-            kprint("Incorrect username or password:\n");
+            print("Incorrect username or password:\n");
             passwordFromUser[0] = '\0';
             usernameFromUser[0] = '\0';
         }
@@ -100,7 +100,7 @@ void getUserNameFromUser()
                 break;
 
             case ENTER:
-                kprint("\n");
+                print("\n");
                 strcpy(usernameFromUser, key_buffer);
                 key_buffer[0] = '\0';
                 //User pressed enter, get out of this function and move on to getting the password.
@@ -135,7 +135,7 @@ void getPasswordFromUser()
                 break;
 
             case ENTER:
-                kprint("\n");
+                print("\n");
                 strcpy(passwordFromUser, key_buffer);
                 key_buffer[0] = '\0';
                 //User pressed enter, get out of this function and move on to getting the password.
@@ -168,7 +168,7 @@ void scanForInput()
             break;
 
         case ENTER:
-            kprint("\n");
+            print("\n");
             userInput(key_buffer);
             key_buffer[0] = '\0';
             break;
@@ -183,7 +183,7 @@ void scanForInput()
 void handleBackspace()
 {
     backspace(key_buffer);
-    kprint_backspace();
+    print_backspace();
 }
 
 void handleEnter()
@@ -195,10 +195,10 @@ void handleKeystroke(uint8_t scankey)
     if (strlen(key_buffer) < 50)
     {
         char letter = sc_ascii[(int)scankey];
-        /* Remember that kprint only accepts char[] */
+        /* Remember that print only accepts char[] */
         char str[2] = {letter, '\0'};
         append(key_buffer, letter);
-        kprint(str);
+        print(str);
     }
     else
     {
@@ -214,7 +214,7 @@ void userInput(char *input)
 {
     if (strcmp(input, "END") == 0)
     {
-        kprint("Stopping the CPU. Bye!\n");
+        print("Stopping the CPU. Bye!\n");
         asm volatile("hlt");
     }
 
@@ -232,9 +232,9 @@ void userInput(char *input)
     {
     }
 
-    // kprint("\nYou said: ");
-    // kprint(input);
-    // kprint("\n> ");
+    // print("\nYou said: ");
+    // print(input);
+    // print("\n> ");
 }
 
 /**
@@ -256,8 +256,8 @@ void parseCommand(char *input)
     int counter = 0;
 
     //Trim the user's input
-    //kprint("\nParsing Command: ");
-    //kprint(input);
+    //print("\nParsing Command: ");
+    //print(input);
     input = trim(input);
     char *subString;
     memset(subString, '\0', 255);
@@ -266,7 +266,7 @@ void parseCommand(char *input)
     // Was there a space at all in the input. If not return. I probably want to do something else here
     if (subString == (char *)0)
     {
-        kprint("\nnot found ");
+        print("\nnot found ");
         return;
     }
 
@@ -280,30 +280,30 @@ void parseCommand(char *input)
     while (subString != (char *)0)
     {
         // Calculate the lengths of the original string and substring
-        kprint("\nIn Loop\n");
+        print("\nIn Loop\n");
         int subLen = strlen(subString);
         //char str1[123];
         // int_to_ascii(subLen, str1);
-        // kprint(str1);
-        // kprint("\n");
+        // print(str1);
+        // print("\n");
 
         int inputLen = strlen(lastTotal);
         // int_to_ascii(inputLen, str1);
-        // kprint(str1);
-        // kprint("\n");
+        // print(str1);
+        // print("\n");
 
         // Get the difference. Check the difference for an error
         int diff = inputLen - subLen;
         if (diff <= 0)
         {
             // some kinda problem
-            kprint("subLen was 0\n");
+            print("subLen was 0\n");
             return;
         }
 
         // int_to_ascii(diff, str1);
-        // kprint(str1);
-        // kprint("\n");
+        // print(str1);
+        // print("\n");
         // char token[255];
         // memset(token, '\0', 255);
 
@@ -311,9 +311,9 @@ void parseCommand(char *input)
         // until we found the space. The result of the copy goes into an array of strings
         strncpy(tokens[counter], lastTotal, diff);
 
-        // kprint("subString b4+: ");
-        // kprint(subString);
-        // kprint("\n");
+        // print("subString b4+: ");
+        // print(subString);
+        // print("\n");
 
         // Increment the substring to remove the space in the front, then copy into the last total so
         // it can be used in the next iteration of the loop
@@ -321,29 +321,29 @@ void parseCommand(char *input)
         memset(lastTotal, '\0', 255);
         strcpy(lastTotal, subString);
 
-        kprint("subString a+: ");
-        kprint(subString);
-        kprint("\n");
+        print("subString a+: ");
+        print(subString);
+        print("\n");
 
-        kprint("TOKEN: ");
-        kprint(tokens[counter]);
-        kprint("\n");
+        print("TOKEN: ");
+        print(tokens[counter]);
+        print("\n");
 
-        kprint("lastTotal: ");
-        kprint(lastTotal);
-        kprint("\n");
+        print("lastTotal: ");
+        print(lastTotal);
+        print("\n");
 
         // Find the new substring based on the current substring.
         subString = strstr(subString, " ");
         if (subString == (char *)0)
         {
-            kprint("Did not find another space\n");
+            print("Did not find another space\n");
         }
         else
         {
-            kprint("subString after new search: ");
-            kprint(subString);
-            kprint("\n");
+            print("subString after new search: ");
+            print(subString);
+            print("\n");
         }
 
         //finally increment the counter
@@ -353,46 +353,46 @@ void parseCommand(char *input)
     //Last total is now the final param
     tokens[counter] = lastTotal;
     counter++;
-    //kprint("Out of Loop\n");
+    //print("Out of Loop\n");
 
     int i = 0;
     for (i = 0; i < counter; i++)
     {
-        kprint("Counted: ");
-        kprint(tokens[i]);
-        kprint("\n");
+        print("Counted: ");
+        print(tokens[i]);
+        print("\n");
     }
 
     if (counter >= 2)
     {
         if (strcmp(tokens[0], "QWE") == 0)
         {
-            kprint("Match: QWE\n");
+            print("Match: QWE\n");
         }
         else
         {
-            kprint("Not matched: QWE - ");
-            kprint(tokens[0]);
+            print("Not matched: QWE - ");
+            print(tokens[0]);
         }
 
         if (strcmp(tokens[1], "ASD") == 0)
         {
-            kprint("Match: ASD\n");
+            print("Match: ASD\n");
         }
         else
         {
-            kprint("Not matched: ASD - ");
-            kprint(tokens[1]);
+            print("Not matched: ASD - ");
+            print(tokens[1]);
         }
 
         if (strcmp(tokens[2], "ZXC") == 0)
         {
-            kprint("Match: ZXC\n");
+            print("Match: ZXC\n");
         }
         else
         {
-            kprint("Not matched: ZXC - ");
-            kprint(tokens[2]);
+            print("Not matched: ZXC - ");
+            print(tokens[2]);
         }
     }
 
@@ -407,14 +407,14 @@ void parseCommand(char *input)
     //     //No spaces
     // } else {
     //     // There was a space detected
-    //     kprint("Space was detected\n");
+    //     print("Space was detected\n");
 
     //     //Get the first item before the space
     //     char *dest;
     //     strncpy(*dest, input, index);
 
-    //     kprint("\n");
-    //     kprint("First User Word:");
-    //     kprint(dest);
+    //     print("\n");
+    //     print("First User Word:");
+    //     print(dest);
     // }
 }

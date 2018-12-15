@@ -28,29 +28,29 @@ void testScreenScroll()
 	{
 		char str[255];
 		int_to_ascii(i, str);
-		kprint_at(str, 0, i);
+		print_at(str, 0, i);
 	}
 
-	kprint_at("This text forces the kernel to scroll. Row 0 will disappear. ", 60, 24);
-	kprint("And with this text, the kernel will scroll again, and row 1 will disappear too!");
+	print_at("This text forces the kernel to scroll. Row 0 will disappear. ", 60, 24);
+	print("And with this text, the kernel will scroll again, and row 1 will disappear too!");
 }
 
 int main(void)
 {
-	kprint("Welcome to my OS :^)\n");
+	print("Welcome to my OS :^)\n");
 
 	// // char *clone;
 	// // char *input = "THIS IS SOMETHING";
 	// // strcpy(clone, input);
 
-	// kprint(clone);
-	// kprint("\n");
-	// kprint(input);
+	// print(clone);
+	// print("\n");
+	// print(input);
 
 	// Show Login Prompt.
 	// user will be stuck here until they login
 
-	kprint("\n> ");
+	print("\n> ");
 	runShell();
 	// Run the shell loop.
 
