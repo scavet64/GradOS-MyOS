@@ -266,7 +266,7 @@ void parseCommand(char *input)
     // Was there a space at all in the input. If not return. I probably want to do something else here
     if (subString == (char *)0)
     {
-        print("\nnot found ");
+        printLn("\nnot found ");
         return;
     }
 
@@ -280,7 +280,7 @@ void parseCommand(char *input)
     while (subString != (char *)0)
     {
         // Calculate the lengths of the original string and substring
-        print("\nIn Loop\n");
+        printLn("\nIn Loop");
         int subLen = strlen(subString);
         //char str1[123];
         // int_to_ascii(subLen, str1);
@@ -297,13 +297,12 @@ void parseCommand(char *input)
         if (diff <= 0)
         {
             // some kinda problem
-            print("subLen was 0\n");
+            printLn("subLen was 0");
             return;
         }
 
         // int_to_ascii(diff, str1);
-        // print(str1);
-        // print("\n");
+        // printLn(str1);
         // char token[255];
         // memset(token, '\0', 255);
 
@@ -312,8 +311,7 @@ void parseCommand(char *input)
         strncpy(tokens[counter], lastTotal, diff);
 
         // print("subString b4+: ");
-        // print(subString);
-        // print("\n");
+        // printLn(subString);
 
         // Increment the substring to remove the space in the front, then copy into the last total so
         // it can be used in the next iteration of the loop
@@ -322,28 +320,24 @@ void parseCommand(char *input)
         strcpy(lastTotal, subString);
 
         print("subString a+: ");
-        print(subString);
-        print("\n");
+        printLn(subString);
 
         print("TOKEN: ");
-        print(tokens[counter]);
-        print("\n");
+        printLn(tokens[counter]);
 
         print("lastTotal: ");
-        print(lastTotal);
-        print("\n");
+        printLn(lastTotal);
 
         // Find the new substring based on the current substring.
         subString = strstr(subString, " ");
         if (subString == (char *)0)
         {
-            print("Did not find another space\n");
+            printLn("Did not find another space");
         }
         else
         {
             print("subString after new search: ");
-            print(subString);
-            print("\n");
+            printLn(subString);
         }
 
         //finally increment the counter
@@ -359,8 +353,7 @@ void parseCommand(char *input)
     for (i = 0; i < counter; i++)
     {
         print("Counted: ");
-        print(tokens[i]);
-        print("\n");
+        printLn(tokens[i]);
     }
 
     if (counter >= 2)
@@ -372,27 +365,27 @@ void parseCommand(char *input)
         else
         {
             print("Not matched: QWE - ");
-            print(tokens[0]);
+            printLn(tokens[0]);
         }
 
         if (strcmp(tokens[1], "ASD") == 0)
         {
-            print("Match: ASD\n");
+            printLn("Match: ASD");
         }
         else
         {
             print("Not matched: ASD - ");
-            print(tokens[1]);
+            printLn(tokens[1]);
         }
 
         if (strcmp(tokens[2], "ZXC") == 0)
         {
-            print("Match: ZXC\n");
+            printLn("Match: ZXC");
         }
         else
         {
             print("Not matched: ZXC - ");
-            print(tokens[2]);
+            printLn(tokens[2]);
         }
     }
 
