@@ -1,1 +1,9 @@
 *.iso
+
+my_os/\.vscode/
+
+*.o
+
+my_os/iso/boot/myos
+
+my_os/myos

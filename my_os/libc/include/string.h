@@ -91,4 +91,10 @@ int strncmp(const char * s1, const char * s2, size_t n);
  */
 char *ctos(char s[2], const char c);
 
+/**
+ * 
+ * 
+ */
+void memcpy(char *source, char *dest, int nbytes);
+
 #endif
