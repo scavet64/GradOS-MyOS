@@ -222,71 +222,179 @@ void userInput(char *input)
     if (isLoggedIn)
     {
         // I need to initalize the variable /shrug
-        char clone[50];
-        char *tmp = clone;
-        //char *clone = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-        strcpy(tmp, input);
-        parseCommand(tmp);
+        // char *clone;
+        // memset(clone, '\0', 254);
+        // //char *clone = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        // strcpy(clone, input);
+        parseCommand(input);
     }
     else
     {
     }
 
-    kprint("\nYou said: ");
-    kprint(input);
-    kprint("\n> ");
+    // kprint("\nYou said: ");
+    // kprint(input);
+    // kprint("\n> ");
 }
 
+/**
+ *  Parses the command.
+ * 
+ *  While the substring is not null
+ *      Get the length of the total input
+ *      Get the length of the 'sub' string
+ *      subtract the two
+ *      do strncpy and thats what we want
+ *      Add that token to an array
+ * 
+ */
 void parseCommand(char *input)
 {
-    //First trim the user input
-    kprint("\nParsing Command: ");
-    //kprint(input);
-    //input = trim(input);
-    char index[255];
-    char *tmp = index;
-    tmp = strstr(input, " ");
+    //Initialize the tokens array with a few elements
+    char *tokens[255];
+    memset(*tokens, '\0', 255);
+    int counter = 0;
 
-    if(tmp == (char *)0){
+    //Trim the user's input
+    //kprint("\nParsing Command: ");
+    //kprint(input);
+    input = trim(input);
+    char *subString;
+    memset(subString, '\0', 255);
+    subString = strstr(input, " ");
+
+    // Was there a space at all in the input. If not return. I probably want to do something else here
+    if (subString == (char *)0)
+    {
         kprint("\nnot found ");
         return;
     }
 
-    kprint("\nstrstr result: ");
-    kprint(tmp);
-    kprint("\n");
+    // Copy the input we got as the last total string we got the substring from
+    // This is used to calculate the difference so we can tell how many chars to copy in strncpy
+    char *lastTotal;
+    memset(lastTotal, '\0', 255);
+    strcpy(lastTotal, input);
 
-    int subLen = strlen(tmp);
-    char str1[123];
-    int_to_ascii(subLen, str1);
-    kprint(str1);
-    kprint("\n");
-
-    int inputLen = strlen(input);
-    int_to_ascii(inputLen, str1);
-    kprint(str1);
-    kprint("\n");
-
-    
-
-    int diff = inputLen - subLen;
-    if (diff <= 0)
+    // While there still is a space in the substring
+    while (subString != (char *)0)
     {
-        // Did not have it
-        kprint("subLen was 0\n");
-        return;
+        // Calculate the lengths of the original string and substring
+        kprint("\nIn Loop\n");
+        int subLen = strlen(subString);
+        //char str1[123];
+        // int_to_ascii(subLen, str1);
+        // kprint(str1);
+        // kprint("\n");
+
+        int inputLen = strlen(lastTotal);
+        // int_to_ascii(inputLen, str1);
+        // kprint(str1);
+        // kprint("\n");
+
+        // Get the difference. Check the difference for an error
+        int diff = inputLen - subLen;
+        if (diff <= 0)
+        {
+            // some kinda problem
+            kprint("subLen was 0\n");
+            return;
+        }
+
+        // int_to_ascii(diff, str1);
+        // kprint(str1);
+        // kprint("\n");
+        // char token[255];
+        // memset(token, '\0', 255);
+
+        // Copy from the start of the last total up until the difference. The difference will be the number of chars
+        // until we found the space. The result of the copy goes into an array of strings
+        strncpy(tokens[counter], lastTotal, diff);
+
+        // kprint("subString b4+: ");
+        // kprint(subString);
+        // kprint("\n");
+
+        // Increment the substring to remove the space in the front, then copy into the last total so
+        // it can be used in the next iteration of the loop
+        subString++;
+        memset(lastTotal, '\0', 255);
+        strcpy(lastTotal, subString);
+
+        kprint("subString a+: ");
+        kprint(subString);
+        kprint("\n");
+
+        kprint("TOKEN: ");
+        kprint(tokens[counter]);
+        kprint("\n");
+
+        kprint("lastTotal: ");
+        kprint(lastTotal);
+        kprint("\n");
+
+        // Find the new substring based on the current substring.
+        subString = strstr(subString, " ");
+        if (subString == (char *)0)
+        {
+            kprint("Did not find another space\n");
+        }
+        else
+        {
+            kprint("subString after new search: ");
+            kprint(subString);
+            kprint("\n");
+        }
+
+        //finally increment the counter
+        counter++;
     }
 
-    int_to_ascii(diff, str1);
-    kprint(str1);
-    kprint("\n");
+    //Last total is now the final param
+    tokens[counter] = lastTotal;
+    counter++;
+    //kprint("Out of Loop\n");
 
-    char token[255];
-    strncpy(token, input, diff);
+    int i = 0;
+    for (i = 0; i < counter; i++)
+    {
+        kprint("Counted: ");
+        kprint(tokens[i]);
+        kprint("\n");
+    }
 
-    kprint("\nTOKEN: ");
-    kprint(token);
-    kprint("\n");
+    if (counter >= 2)
+    {
+        if (strcmp(tokens[0], "QWE") == 0)
+        {
+            kprint("Match: QWE\n");
+        }
+        else
+        {
+            kprint("Not matched: QWE - ");
+            kprint(tokens[0]);
+        }
+
+        if (strcmp(tokens[1], "ASD") == 0)
+        {
+            kprint("Match: ASD\n");
+        }
+        else
+        {
+            kprint("Not matched: ASD - ");
+            kprint(tokens[1]);
+        }
+
+        if (strcmp(tokens[2], "ZXC") == 0)
+        {
+            kprint("Match: ZXC\n");
+        }
+        else
+        {
+            kprint("Not matched: ZXC - ");
+            kprint(tokens[2]);
+        }
+    }
 
     // Get the length of the total input
     // Get the length of the 'sub' string

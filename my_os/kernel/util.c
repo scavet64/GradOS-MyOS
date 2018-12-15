@@ -75,8 +75,9 @@ int countArray(char *array[])
 void printArray(char *array[])
 {
     kprint("\n");
+    int size = countArray(array);
     int i = 0;
-    for (i = 0; i < 10; i++)
+    for (i = 0; i < size; i++)
     {
         kprint(array[i]);
         kprint("\n");
