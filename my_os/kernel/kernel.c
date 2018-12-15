@@ -9,6 +9,7 @@
 
 #include "../drivers/screen.h"
 #include "util.h"
+#include "shell.h"
 
 static const int VGA_WIDTH = 80;
 static const int VGA_HEIGHT = 25;
@@ -36,17 +37,12 @@ void testScreenScroll()
 
 int main(void)
 {
-	kprint("Welcome to my OS. Warning its pretty buggy :^)");
-
-	while (1)
-	{
-		pollKeyboard();
-	}
+	kprint("Welcome to my OS :^)\n");
 
 	// Show Login Prompt.
 	// user will be stuck here until they login
 
-	//runShell();
+	runShell();
 	// Run the shell loop.
 
 	return 1;
