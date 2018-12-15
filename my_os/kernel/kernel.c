@@ -6,7 +6,6 @@
 #include <stdint.h>
 //#include "libc/include/keyboard.h"
 #include "../drivers/keyboard.h"
-#include "shell.h";
 
 #include "../drivers/screen.h"
 #include "util.h"
