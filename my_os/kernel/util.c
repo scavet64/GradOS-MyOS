@@ -44,3 +44,41 @@ void backspace(char s[]) {
     int len = strlen(s);
     s[len-1] = '\0';
 }
+
+
+int countArray(char *array[])
+{
+    kprint("\n");
+    kprint("\n");
+    int i = 0;
+    char *tmp = array[i];
+    while (strcmp(array[i], "\0") != 0)
+    {
+        //DEBUG INFORMATION: TODO DELETE
+        tmp = array[i];
+        kprint("Index: ");
+        //kprintInt(i);
+
+        char *str;
+        int_to_ascii(i, str);
+        kprint(str);
+
+        kprint(" Value: ");
+        kprint(tmp);
+
+        kprint("\n");
+        i++;
+    }
+    return i;
+}
+
+void printArray(char *array[])
+{
+    kprint("\n");
+    int i = 0;
+    for (i = 0; i < 10; i++)
+    {
+        kprint(array[i]);
+        kprint("\n");
+    }
+}
