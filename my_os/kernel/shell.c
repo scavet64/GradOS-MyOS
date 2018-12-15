@@ -252,7 +252,8 @@ void parseCommand(char *input)
 {
     //Initialize the tokens array with a few elements
     char *tokens[255];
-    memset(*tokens, '\0', 255);
+    //char **tokenArray = tokens;
+    memset(tokens, '\0', 255);
     int counter = 0;
 
     //Trim the user's input
@@ -300,15 +301,45 @@ void parseCommand(char *input)
             printLn("subLen was 0");
             return;
         }
+        print("TOKEN: ");
+        if (counter > 0)
+        {
+            printLn(tokens[counter - 1]);
+        }
+        else
+        {
+            printLn(tokens[counter]);
+        }
 
         // int_to_ascii(diff, str1);
         // printLn(str1);
-        // char token[255];
-        // memset(token, '\0', 255);
+        char *token;
+        memset(token, '\0', 255);
 
         // Copy from the start of the last total up until the difference. The difference will be the number of chars
         // until we found the space. The result of the copy goes into an array of strings
-        strncpy(tokens[counter], lastTotal, diff);
+        strncpy(token, lastTotal, diff);
+        //strncpy(tokens[counter], lastTotal, diff);
+        if (counter == 1)
+        {
+            tokens[counter] = "RAndom thing";
+        }
+        else
+        {
+            tokens[counter] = token;
+        }
+
+        print("TOKEN: ");
+        if (counter > 0)
+        {
+            printLn(tokens[counter - 1]);
+        }
+        else
+        {
+            printLn(tokens[counter]);
+        }
+
+        //printLn(*token);
 
         // print("subString b4+: ");
         // printLn(subString);
@@ -323,7 +354,14 @@ void parseCommand(char *input)
         printLn(subString);
 
         print("TOKEN: ");
-        printLn(tokens[counter]);
+        if (counter > 0)
+        {
+            printLn(tokens[counter - 1]);
+        }
+        else
+        {
+            printLn(tokens[counter]);
+        }
 
         print("lastTotal: ");
         printLn(lastTotal);
@@ -340,6 +378,16 @@ void parseCommand(char *input)
             printLn(subString);
         }
 
+        print("TOKEN: ");
+        if (counter > 0)
+        {
+            printLn(tokens[counter - 1]);
+        }
+        else
+        {
+            printLn(tokens[counter]);
+        }
+
         //finally increment the counter
         counter++;
     }
@@ -347,7 +395,7 @@ void parseCommand(char *input)
     //Last total is now the final param
     tokens[counter] = lastTotal;
     counter++;
-    //print("Out of Loop\n");
+    print("Out of Loop\n");
 
     int i = 0;
     for (i = 0; i < counter; i++)
