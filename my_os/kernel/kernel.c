@@ -42,6 +42,7 @@ int main(void)
 	// Show Login Prompt.
 	// user will be stuck here until they login
 
+	kprint("\n> ");
 	runShell();
 	// Run the shell loop.
 

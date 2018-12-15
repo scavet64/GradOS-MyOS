@@ -1,0 +1,1 @@
+int checkUserData(char *username, char *password);
