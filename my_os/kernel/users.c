@@ -17,7 +17,6 @@ int checkUserData(char *username, char *password)
     int i;
     for (i = 0; i < 10; i++)
     {
-        print("checked");
         if (strcmp((char *)usernamesList[i], username) == 0)
         {
             if (strcmp((char *)passwordsList[i], password) == 0)
@@ -41,5 +40,6 @@ int addUserData(char *username, char *password)
     }
     else
     {
+        //error
     }
 }
