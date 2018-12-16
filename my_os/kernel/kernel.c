@@ -19,41 +19,8 @@ void kernel_early(void)
 {
 }
 
-void testScreenScroll()
-{
-	clearScreen();
-
-	/* Fill up the screen */
-	int i = 0;
-	for (i = 0; i < 24; i++)
-	{
-		char str[255];
-		intToAscii(i, str);
-		print_at(str, 0, i);
-	}
-
-	print_at("This text forces the kernel to scroll. Row 0 will disappear. ", 60, 24);
-	print("And with this text, the kernel will scroll again, and row 1 will disappear too!");
-}
-
 int main(void)
 {
-	printLn(" Welcome to my OS :^)");
-
-	// // char *clone;
-	// // char *input = "THIS IS SOMETHING";
-	// // strcpy(clone, input);
-
-	// print(clone);
-	// print("\n");
-	// print(input);
-
-	// Show Login Prompt.
-	// user will be stuck here until they login
-
-	//print("\n> ");
 	runShell();
-	// Run the shell loop.
-
 	return 1;
 }

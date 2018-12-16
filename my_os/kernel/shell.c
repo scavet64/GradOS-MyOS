@@ -49,6 +49,7 @@ const char sc_ascii[] = {'?', '?', '1', '2', '3', '4', '5', '6',
 
 uint8_t runShell()
 {
+    printLn("Welcome to my OS :^)");
     //TEST CODE:
     addUserData("TEST", "TEST");
 
