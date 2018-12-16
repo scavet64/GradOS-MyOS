@@ -427,6 +427,7 @@ void handleThreeWordCommands(char *command, char *parm1, char *parm2)
         {
             printLn("Please enter your password:");
             memset(passwordFromUser, '\0', 255);
+            key_buffer[0] = '\0';
             while (passwordFromUser[0] == '\0')
             {
                 getPasswordFromUser();
@@ -444,6 +445,7 @@ void handleThreeWordCommands(char *command, char *parm1, char *parm2)
         {
             printLn("Please enter your password:");
             memset(passwordFromUser, '\0', 255);
+            key_buffer[0] = '\0';
             while (passwordFromUser[0] == '\0')
             {
                 getPasswordFromUser();
