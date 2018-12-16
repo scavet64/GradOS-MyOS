@@ -1,4 +1,5 @@
 #include "../include/strutils.h"
+#include "../../drivers/screen.h"
 
 /**
  * Converts a string into an integer. 
@@ -11,6 +12,7 @@ int atoi(char *str)
     int result = 0; // Initialize result
     int i;
     int isNeg = 0;
+    int previousValue = 0;
 
     for (i = 0; str[i] != '\0'; ++i)
     {
@@ -21,6 +23,11 @@ int atoi(char *str)
         else if (isDigit(str[i]))
         {
             result = result * 10 + str[i] - '0';
+            if (result < previousValue){
+                //integer overflow
+                printLn("WARNING: Integer Overflow Detected");
+            }
+            previousValue = result;
         }
     }
 
