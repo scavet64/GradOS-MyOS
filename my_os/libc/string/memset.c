@@ -1,5 +1,5 @@
 #include "stddef.h" /* size_t */
-#include "../include/string.h" 
+#include "../include/string.h"
 
 /**
  * Fills the first n bytes of a memory location with a particular value
@@ -8,9 +8,11 @@
  * Input - size: The number of bytes in the buffer we will write
  * Output - None.
  */
-void* memset(void* bufptr, int value, size_t size) {
-    unsigned char* p = bufptr;
-    while (size > 0) {
+void *memset(void *bufptr, int value, size_t size)
+{
+    unsigned char *p = bufptr;
+    while (size > 0)
+    {
         *p = value;
         *p++;
         size--;

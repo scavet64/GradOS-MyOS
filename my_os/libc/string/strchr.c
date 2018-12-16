@@ -4,9 +4,12 @@
  * Input - c: The integer representation of a character to search for.
  * Output - The address of the character in the string
  */
-char *strchr(const char *s, int c) {
-    while (*s != (char)c) {
-        if(*s++ == '\0'){
+char *strchr(const char *s, int c)
+{
+    while (*s != (char)c)
+    {
+        if (*s++ == '\0')
+        {
             return 0;
         }
     }

@@ -1,7 +1,7 @@
 CC=gcc
 TARGET=myos
 BIN=./bin/
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c libc/string/*.c libc/conversion/*.c system/*.c *.c)
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c libc/string/*.c  libc/conversion/*.c system/*.c *.c)
 HEADERS = $(wildcard kernel/*.h drivers/*.h include/*.h system/*.h)
 OBJS=$(C_SOURCES:.c=.o)
 
@@ -10,7 +10,7 @@ all: finale
 .PHONY: all compile clean finale
 
 %.o: %.c ${HEADERS}
-	$(CC) -c $(@:.o=.c) -o $@ -ffreestanding -fno-exceptions -m32 -O0
+	$(CC) -c $(@:.o=.c) -o $@ -ffreestanding -fno-exceptions -m32
 
 $(TARGET): $(OBJS)
 	$(shell nasm -f elf start.asm -o start.o)
