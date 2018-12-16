@@ -32,6 +32,7 @@ void handleSingleWordCommands(char *command);
 void handleTwoWordCommands(char *command, char *parm1);
 void handleThreeWordCommands(char *command, char *parm1, char *parm2);
 void handleFourWordCommands(char *command, char *parm1, char *parm2, char *parm3);
+void logout();
 
 #define SC_MAX 57
 const char *sc_name[] = {"ERROR", "Esc", "1", "2", "3", "4", "5", "6",
@@ -51,37 +52,40 @@ uint8_t runShell()
     //TEST CODE:
     addUserData("TEST", "TEST");
 
-    while (!isLoggedIn)
-    {
-        print("Please enter your username:\n");
-        while (usernameFromUser[0] == '\0')
-        {
-            getUserNameFromUser();
-        }
-
-        print("Please enter your password:\n");
-        while (passwordFromUser[0] == '\0')
-        {
-            getPasswordFromUser();
-        }
-
-        //Check the collected information
-        isLoggedIn = checkUserData(usernameFromUser, passwordFromUser);
-
-        if (!isLoggedIn)
-        {
-            print("Incorrect username or password:\n");
-            passwordFromUser[0] = '\0';
-            usernameFromUser[0] = '\0';
-        }
-    }
-
-    print("\n> ");
-
     while (1)
     {
-        // running shell
-        scanForInput();
+        while (!isLoggedIn)
+        {
+            print("Please enter your username:\n");
+            while (usernameFromUser[0] == '\0')
+            {
+                getUserNameFromUser();
+            }
+
+            print("Please enter your password:\n");
+            while (passwordFromUser[0] == '\0')
+            {
+                getPasswordFromUser();
+            }
+
+            //Check the collected information
+            isLoggedIn = checkUserData(usernameFromUser, passwordFromUser);
+
+            if (!isLoggedIn)
+            {
+                print("Incorrect username or password:\n");
+                passwordFromUser[0] = '\0';
+                usernameFromUser[0] = '\0';
+            }
+        }
+
+        print("\n> ");
+
+        while (isLoggedIn)
+        {
+            // running shell
+            scanForInput();
+        }
     }
 }
 
@@ -261,6 +265,11 @@ void parseCommand(char *input)
     memset(fourthToken, '\0', 255);
     int counter = 0;
 
+    // printLn(firstToken);
+    // printLn(secondToken);
+    // printLn(thirdToken);
+    // printLn(fourthToken);
+
     //Trim the user's input
     input = trim(input);
 
@@ -273,7 +282,7 @@ void parseCommand(char *input)
     // This is used to calculate the difference so we can tell how many chars to copy in strncpy
     char temp[255];
     char *lastTotal = temp;
-    memset(lastTotal, '\0', 255);
+    memset(temp, '\0', 255);
     strcpy(lastTotal, input);
 
     // While there still is a space in the substring
@@ -326,13 +335,21 @@ void parseCommand(char *input)
         counter++;
     }
 
+    // printLn("");
+
+    // printLn(firstToken);
+    // printLn(secondToken);
+    // printLn(thirdToken);
+    // printLn(fourthToken);
+    // printLn(lastTotal);
+
     switch (counter)
     {
     case 0:
         handleSingleWordCommands(input);
         break;
     case 1:
-        //strncpy(secondToken, lastTotal, diff);
+        handleTwoWordCommands(firstToken, lastTotal);
         break;
     case 2:
         handleThreeWordCommands(firstToken, secondToken, lastTotal);
@@ -360,6 +377,10 @@ void handleSingleWordCommands(char *command)
     {
         clearScreen();
     }
+    else if (strcmp(command, "LOGOUT") == 0)
+    {
+        logout();
+    }
     else
     {
         print("No command found for: ");
@@ -368,7 +389,16 @@ void handleSingleWordCommands(char *command)
     return;
 }
 
-void handleTwoWordCommands(char *command, char *parm1);
+void handleTwoWordCommands(char *command, char *parm1)
+{
+    if (strcmp(command, "USER") == 0)
+    {
+        if (strcmp(parm1, "LIST") == 0)
+        {
+            listAllUsers();
+        }
+    }
+}
 
 void handleFourWordCommands(char *command, char *parm1, char *parm2, char *parm3);
 
@@ -391,31 +421,47 @@ void handleThreeWordCommands(char *command, char *parm1, char *parm2)
     {
         div(parm1, parm2);
     }
-    // else if (strcmp(command, "USER") == 0)
-    // {
-    //     if (strcmp(parm1, "REGISTER") == 0)
-    //     {
-    //         printLn("Please enter your password:");
-    //         while (passwordFromUser[0] == '\0')
-    //         {
-    //             getPasswordFromUser();
-    //         }
-    //         addUserData(parm2, passwordFromUser);
-    //     }
-    //     else if (strcmp(parm1, "PASSWORD") == 0)
-    //     {
-    //         printLn("Please enter your password:");
-    //         while (passwordFromUser[0] == '\0')
-    //         {
-    //             getPasswordFromUser();
-    //         }
-    //         addUserData(parm2, passwordFromUser);
-    //     }
-    // }
+    else if (strcmp(command, "USER") == 0)
+    {
+        if (strcmp(parm1, "REGISTER") == 0)
+        {
+            printLn("Please enter your password:");
+            memset(passwordFromUser, '\0', 255);
+            while (passwordFromUser[0] == '\0')
+            {
+                getPasswordFromUser();
+            }
+            if (addUserData(parm2, passwordFromUser))
+            {
+                printLn("Successfully added new user");
+            }
+            else
+            {
+                printLn("Failed to add new user");
+            }
+        }
+        else if (strcmp(parm1, "PASSWORD") == 0)
+        {
+            printLn("Please enter your password:");
+            memset(passwordFromUser, '\0', 255);
+            while (passwordFromUser[0] == '\0')
+            {
+                getPasswordFromUser();
+            }
+            changeUserPassword(parm2, passwordFromUser);
+        }
+    }
     else
     {
         print("No command found for: ");
         printLn(command);
     }
     return;
+}
+
+void logout()
+{
+    memset(usernameFromUser, '\0', 255);
+    memset(passwordFromUser, '\0', 255);
+    isLoggedIn = 0;
 }

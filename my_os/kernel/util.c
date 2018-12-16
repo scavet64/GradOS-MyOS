@@ -49,8 +49,10 @@ void backspace(char s[]) {
 int countArray(char *array[])
 {
     int i = 0;
-    char *tmp = array[i];
-    while (strcmp(array[i++], "\0") != 0)
+    while (strcmp(array[i], "\0") != 0){
+        //We only want to increment i if contiditonal was successful
+        i++;
+    }
     return i;
 }
 

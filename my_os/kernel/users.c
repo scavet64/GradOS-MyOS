@@ -21,6 +21,8 @@ int checkUserData(char *username, char *password)
         {
             if (strcmp((char *)passwordsList[i], password) == 0)
             {
+                print("Welcome back ");
+                printLn(usernamesList[i]);
                 return true;
             }
         }
@@ -30,16 +32,36 @@ int checkUserData(char *username, char *password)
 
 int addUserData(char *username, char *password)
 {
-    int numUsers = countArray(usernamesList);
-    int numPass = countArray(passwordsList);
-    if (numUsers < 10 && numPass < 10)
+    int i;
+    for (i = 0; i < 10; i++)
     {
-        usernamesList[1] = (char *)username;
-        passwordsList[1] = (char *)password;
-        countArray(usernamesList);
+        if (strcmp((char *)usernamesList[i], "\0") == 0)
+        {
+            if (strcmp((char *)passwordsList[i], "\0") == 0)
+            {
+                usernamesList[i] = (char *)username;
+                passwordsList[i] = (char *)password;
+                return true;
+            }
+        }
     }
-    else
+    return false;
+}
+
+void listAllUsers()
+{
+    printArray(usernamesList);
+}
+
+int changeUserPassword(char *username, char *password)
+{
+    int i;
+    for (i = 0; i < 10; i++)
     {
-        //error
+        if (strcmp((char *)usernamesList[i], username) == 0)
+        {
+            passwordsList[i] = (char *)password;
+        }
     }
+    return false;
 }
