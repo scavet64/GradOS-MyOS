@@ -67,13 +67,15 @@ void print_backspace()
     }
 }
 
-void printInt(int num) {
+void printInt(int num)
+{
     char *str;
     int_to_ascii(num, str);
     print(str);
 }
 
-void printIntLn(int num) {
+void printIntLn(int num)
+{
     printInt(num);
     printLn("");
 }
@@ -114,6 +116,12 @@ int print_char(char c, int col, int row, char attr)
     {
         row = get_offset_row(offset);
         offset = get_offset(0, row + 1);
+    }
+    else if (c == '\t')
+    {
+        col = get_offset_col(offset);
+        row = get_offset_row(offset);
+        offset = get_offset(col + 5, row );
     }
     else
     {

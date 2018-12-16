@@ -31,7 +31,6 @@ void getPasswordFromUser();
 void handleSingleWordCommands(char *command);
 void handleTwoWordCommands(char *command, char *parm1);
 void handleThreeWordCommands(char *command, char *parm1, char *parm2);
-void handleFourWordCommands(char *command, char *parm1, char *parm2, char *parm3);
 void logout();
 void showHelp();
 
@@ -193,8 +192,15 @@ void scanForInput()
 
 void handleBackspace()
 {
-    backspace(key_buffer);
-    print_backspace();
+    if (key_buffer[0] != '\0')
+    {
+        backspace(key_buffer);
+        print_backspace();
+    }
+    else
+    {
+        //TODO: Figure out dinging noise
+    }
 }
 
 void handleEnter()
@@ -203,7 +209,7 @@ void handleEnter()
 
 void handleKeystroke(uint8_t scankey)
 {
-    if (strlen(key_buffer) < 50)
+    if (strlen(key_buffer) < 250)
     {
         char letter = sc_ascii[(int)scankey];
         /* Remember that print only accepts char[] */
@@ -260,17 +266,8 @@ void parseCommand(char *input)
     memset(firstToken, '\0', 255);
     char secondToken[255];
     memset(secondToken, '\0', 255);
-    char thirdToken[255];
-    memset(thirdToken, '\0', 255);
-    char fourthToken[255];
-    memset(fourthToken, '\0', 255);
     int counter = 0;
-
-    // printLn(firstToken);
-    // printLn(secondToken);
-    // printLn(thirdToken);
-    // printLn(fourthToken);
-
+    
     //Trim the user's input
     input = trim(input);
 
@@ -314,12 +311,6 @@ void parseCommand(char *input)
         case 1:
             strncpy(secondToken, lastTotal, diff);
             break;
-        case 2:
-            strncpy(thirdToken, lastTotal, diff);
-            break;
-        case 3:
-            strncpy(fourthToken, lastTotal, diff);
-            break;
         default:
             //error?
             break;
@@ -355,11 +346,9 @@ void parseCommand(char *input)
     case 2:
         handleThreeWordCommands(firstToken, secondToken, lastTotal);
         break;
-    case 3:
-        //strncpy(fourthToken, lastTotal, diff);
-        break;
     default:
         //error?
+        printLn("No command was found");
         break;
     }
 
@@ -371,8 +360,6 @@ void parseCommand(char *input)
 
 void handleSingleWordCommands(char *command)
 {
-    //Single word command
-    printLn("\nSingle word command detected");
     //Check for the commands
     if (strcmp(command, "CLEAR") == 0)
     {
@@ -403,9 +390,12 @@ void handleTwoWordCommands(char *command, char *parm1)
             listAllUsers();
         }
     }
+    else
+    {
+        print("No command found for: ");
+        printLn(command);
+    }
 }
-
-void handleFourWordCommands(char *command, char *parm1, char *parm2, char *parm3);
 
 void handleThreeWordCommands(char *command, char *parm1, char *parm2)
 {
