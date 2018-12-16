@@ -20,7 +20,7 @@ void kernel_early(void)
 
 void testScreenScroll()
 {
-	clear_screen();
+	clearScreen();
 
 	/* Fill up the screen */
 	int i = 0;
@@ -37,7 +37,7 @@ void testScreenScroll()
 
 int main(void)
 {
-	print("Welcome to my OS :^)\n");
+	printLn(" Welcome to my OS :^)");
 
 	// // char *clone;
 	// // char *input = "THIS IS SOMETHING";
@@ -50,7 +50,7 @@ int main(void)
 	// Show Login Prompt.
 	// user will be stuck here until they login
 
-	print("\n> ");
+	//print("\n> ");
 	runShell();
 	// Run the shell loop.
 

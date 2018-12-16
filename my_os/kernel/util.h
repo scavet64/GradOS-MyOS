@@ -4,3 +4,4 @@ void append(char s[], char n);
 void backspace(char s[]);
 int countArray(char *array[]);
 void printArray(char *array[]);
+int atoi(char *str);

@@ -10,7 +10,7 @@ all: finale
 .PHONY: all compile clean finale
 
 %.o: %.c ${HEADERS}
-	$(CC) -c $(@:.o=.c) -o $@ -ffreestanding -fno-exceptions -m32 -O0
+	$(CC) -c $(@:.o=.c) -o $@ -ffreestanding -fno-exceptions -m32
 
 $(TARGET): $(OBJS)
 	$(shell nasm -f elf start.asm -o start.o)

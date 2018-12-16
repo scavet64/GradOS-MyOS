@@ -48,27 +48,9 @@ void backspace(char s[]) {
 
 int countArray(char *array[])
 {
-    print("\n");
-    print("\n");
     int i = 0;
     char *tmp = array[i];
-    while (strcmp(array[i], "\0") != 0)
-    {
-        //DEBUG INFORMATION: TODO DELETE
-        tmp = array[i];
-        print("Index: ");
-        //printInt(i);
-
-        char *str;
-        int_to_ascii(i, str);
-        print(str);
-
-        print(" Value: ");
-        print(tmp);
-
-        print("\n");
-        i++;
-    }
+    while (strcmp(array[i++], "\0") != 0)
     return i;
 }
 
@@ -83,3 +65,16 @@ void printArray(char *array[])
         print("\n");
     }
 }
+
+int atoi(char *str) 
+{ 
+    int result = 0; // Initialize result 
+    int i;
+
+    for (i = 0; str[i] != '\0'; ++i) {
+        result = result*10 + str[i] - '0'; 
+    }
+   
+    // return result. 
+    return result; 
+} 

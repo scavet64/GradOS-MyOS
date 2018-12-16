@@ -28,6 +28,10 @@ void userInput(char *input);
 void parseCommand();
 void getUserNameFromUser();
 void getPasswordFromUser();
+void handleSingleWordCommands(char *command);
+void handleTwoWordCommands(char *command, char *parm1);
+void handleThreeWordCommands(char *command, char *parm1, char *parm2);
+void handleFourWordCommands(char *command, char *parm1, char *parm2, char *parm3);
 
 #define SC_MAX 57
 const char *sc_name[] = {"ERROR", "Esc", "1", "2", "3", "4", "5", "6",
@@ -71,6 +75,8 @@ uint8_t runShell()
             usernameFromUser[0] = '\0';
         }
     }
+
+    print("\n> ");
 
     while (1)
     {
@@ -214,27 +220,21 @@ void userInput(char *input)
 {
     if (strcmp(input, "END") == 0)
     {
-        print("Stopping the CPU. Bye!\n");
+        printLn("Shutting down :^)");
         asm volatile("hlt");
     }
 
     //Check login
     if (isLoggedIn)
     {
-        // I need to initalize the variable /shrug
-        // char *clone;
-        // memset(clone, '\0', 254);
-        // //char *clone = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-        // strcpy(clone, input);
         parseCommand(input);
     }
     else
     {
+        printLn("You must be logged to use this terminal");
     }
 
-    // print("\nYou said: ");
-    // print(input);
-    // print("\n> ");
+    print("\n> ");
 }
 
 /**
@@ -250,30 +250,29 @@ void userInput(char *input)
  */
 void parseCommand(char *input)
 {
-    //Initialize the tokens array with a few elements
-    char *tokens[255];
-    //char **tokenArray = tokens;
-    memset(tokens, '\0', 255);
+    // Hacky local vars for storing the parsed input
+    char firstToken[255];
+    memset(firstToken, '\0', 255);
+    char secondToken[255];
+    memset(secondToken, '\0', 255);
+    char thirdToken[255];
+    memset(thirdToken, '\0', 255);
+    char fourthToken[255];
+    memset(fourthToken, '\0', 255);
     int counter = 0;
 
     //Trim the user's input
-    //print("\nParsing Command: ");
-    //print(input);
     input = trim(input);
+
+    // Start by getting the first location of a space.
     char *subString;
     memset(subString, '\0', 255);
     subString = strstr(input, " ");
 
-    // Was there a space at all in the input. If not return. I probably want to do something else here
-    if (subString == (char *)0)
-    {
-        printLn("\nnot found ");
-        return;
-    }
-
     // Copy the input we got as the last total string we got the substring from
     // This is used to calculate the difference so we can tell how many chars to copy in strncpy
-    char *lastTotal;
+    char temp[255];
+    char *lastTotal = temp;
     memset(lastTotal, '\0', 255);
     strcpy(lastTotal, input);
 
@@ -281,68 +280,40 @@ void parseCommand(char *input)
     while (subString != (char *)0)
     {
         // Calculate the lengths of the original string and substring
-        printLn("\nIn Loop");
         int subLen = strlen(subString);
-        //char str1[123];
-        // int_to_ascii(subLen, str1);
-        // print(str1);
-        // print("\n");
-
         int inputLen = strlen(lastTotal);
-        // int_to_ascii(inputLen, str1);
-        // print(str1);
-        // print("\n");
-
-        // Get the difference. Check the difference for an error
         int diff = inputLen - subLen;
         if (diff <= 0)
         {
             // some kinda problem
-            printLn("subLen was 0");
+            printLn("Error, diff was less than 0");
             return;
         }
-        print("TOKEN: ");
-        if (counter > 0)
-        {
-            printLn(tokens[counter - 1]);
-        }
-        else
-        {
-            printLn(tokens[counter]);
-        }
 
-        // int_to_ascii(diff, str1);
-        // printLn(str1);
-        char *token;
-        memset(token, '\0', 255);
-
-        // Copy from the start of the last total up until the difference. The difference will be the number of chars
-        // until we found the space. The result of the copy goes into an array of strings
-        strncpy(token, lastTotal, diff);
-        //strncpy(tokens[counter], lastTotal, diff);
-        if (counter == 1)
+        // This is the ultimate hack just to get this working. I was unable to do this the way I wanted due to a memory issue.
+        // For me to declare a temp char array inside the while loop and assign its value to the overall array of pointers (string array),
+        // it would always overwrite the previous information. After some research, it was suggested to use strdup, but to implement that,
+        // I would need to implement a memory manager to malloc the memory.
+        switch (counter)
         {
-            tokens[counter] = "RAndom thing";
+            // Copy from the start of the last total up until the difference.
+            // The difference will be the number of chars until we found the space.
+        case 0:
+            strncpy(firstToken, lastTotal, diff);
+            break;
+        case 1:
+            strncpy(secondToken, lastTotal, diff);
+            break;
+        case 2:
+            strncpy(thirdToken, lastTotal, diff);
+            break;
+        case 3:
+            strncpy(fourthToken, lastTotal, diff);
+            break;
+        default:
+            //error?
+            break;
         }
-        else
-        {
-            tokens[counter] = token;
-        }
-
-        print("TOKEN: ");
-        if (counter > 0)
-        {
-            printLn(tokens[counter - 1]);
-        }
-        else
-        {
-            printLn(tokens[counter]);
-        }
-
-        //printLn(*token);
-
-        // print("subString b4+: ");
-        // printLn(subString);
 
         // Increment the substring to remove the space in the front, then copy into the last total so
         // it can be used in the next iteration of the loop
@@ -350,112 +321,101 @@ void parseCommand(char *input)
         memset(lastTotal, '\0', 255);
         strcpy(lastTotal, subString);
 
-        print("subString a+: ");
-        printLn(subString);
-
-        print("TOKEN: ");
-        if (counter > 0)
-        {
-            printLn(tokens[counter - 1]);
-        }
-        else
-        {
-            printLn(tokens[counter]);
-        }
-
-        print("lastTotal: ");
-        printLn(lastTotal);
-
         // Find the new substring based on the current substring.
         subString = strstr(subString, " ");
-        if (subString == (char *)0)
-        {
-            printLn("Did not find another space");
-        }
-        else
-        {
-            print("subString after new search: ");
-            printLn(subString);
-        }
-
-        print("TOKEN: ");
-        if (counter > 0)
-        {
-            printLn(tokens[counter - 1]);
-        }
-        else
-        {
-            printLn(tokens[counter]);
-        }
-
-        //finally increment the counter
         counter++;
     }
 
-    //Last total is now the final param
-    tokens[counter] = lastTotal;
-    counter++;
-    print("Out of Loop\n");
-
-    int i = 0;
-    for (i = 0; i < counter; i++)
+    switch (counter)
     {
-        print("Counted: ");
-        printLn(tokens[i]);
-    }
-
-    if (counter >= 2)
-    {
-        if (strcmp(tokens[0], "QWE") == 0)
-        {
-            print("Match: QWE\n");
-        }
-        else
-        {
-            print("Not matched: QWE - ");
-            printLn(tokens[0]);
-        }
-
-        if (strcmp(tokens[1], "ASD") == 0)
-        {
-            printLn("Match: ASD");
-        }
-        else
-        {
-            print("Not matched: ASD - ");
-            printLn(tokens[1]);
-        }
-
-        if (strcmp(tokens[2], "ZXC") == 0)
-        {
-            printLn("Match: ZXC");
-        }
-        else
-        {
-            print("Not matched: ZXC - ");
-            printLn(tokens[2]);
-        }
+    case 0:
+        handleSingleWordCommands(input);
+        break;
+    case 1:
+        //strncpy(secondToken, lastTotal, diff);
+        break;
+    case 2:
+        handleThreeWordCommands(firstToken, secondToken, lastTotal);
+        break;
+    case 3:
+        //strncpy(fourthToken, lastTotal, diff);
+        break;
+    default:
+        //error?
+        break;
     }
 
     // Get the length of the total input
     // Get the length of the 'sub' string
     // subtract the two
     // do strncpy and thats what we want
+}
 
-    //
+void handleSingleWordCommands(char *command)
+{
+    //Single word command
+    printLn("\nSingle word command detected");
+    //Check for the commands
+    if (strcmp(command, "CLEAR") == 0)
+    {
+        clearScreen();
+    }
+    else
+    {
+        print("No command found for: ");
+        printLn(command);
+    }
+    return;
+}
 
-    // if (index == 0) {
-    //     //No spaces
-    // } else {
-    //     // There was a space detected
-    //     print("Space was detected\n");
+void handleTwoWordCommands(char *command, char *parm1);
 
-    //     //Get the first item before the space
-    //     char *dest;
-    //     strncpy(*dest, input, index);
+void handleFourWordCommands(char *command, char *parm1, char *parm2, char *parm3);
 
-    //     print("\n");
-    //     print("First User Word:");
-    //     print(dest);
+void handleThreeWordCommands(char *command, char *parm1, char *parm2)
+{
+    //Check for the commands
+    if (strcmp(command, "ADD") == 0)
+    {
+        add(parm1, parm2);
+    }
+    else if (strcmp(command, "SUB") == 0)
+    {
+        sub(parm1, parm2);
+    }
+    else if (strcmp(command, "MULT") == 0)
+    {
+        mult(parm1, parm2);
+    }
+    else if (strcmp(command, "DIV") == 0)
+    {
+        div(parm1, parm2);
+    }
+    // else if (strcmp(command, "USER") == 0)
+    // {
+    //     if (strcmp(parm1, "REGISTER") == 0)
+    //     {
+    //         printLn("Please enter your password:");
+    //         while (passwordFromUser[0] == '\0')
+    //         {
+    //             getPasswordFromUser();
+    //         }
+    //         addUserData(parm2, passwordFromUser);
+    //     }
+    //     else if (strcmp(parm1, "PASSWORD") == 0)
+    //     {
+    //         printLn("Please enter your password:");
+    //         while (passwordFromUser[0] == '\0')
+    //         {
+    //             getPasswordFromUser();
+    //         }
+    //         addUserData(parm2, passwordFromUser);
+    //     }
     // }
+    else
+    {
+        print("No command found for: ");
+        printLn(command);
+    }
+    return;
 }

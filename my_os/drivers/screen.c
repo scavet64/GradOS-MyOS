@@ -73,6 +73,11 @@ void printInt(int num) {
     print(str);
 }
 
+void printIntLn(int num) {
+    printInt(num);
+    printLn("");
+}
+
 /**********************************************************
  * Private kernel functions                               *
  **********************************************************/
@@ -161,7 +166,7 @@ void set_cursor_offset(int offset)
     port_byte_out(REG_SCREEN_DATA, (unsigned char)(offset & 0xff));
 }
 
-void clear_screen()
+void clearScreen()
 {
     int screen_size = MAX_COLS * MAX_ROWS;
     int i;
