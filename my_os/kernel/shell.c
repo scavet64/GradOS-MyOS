@@ -10,6 +10,8 @@
 
 #define BACKSPACE 0x0E
 #define ENTER 0x1C
+#define SHOW_INPUT 1
+#define HIDE_INPUT 0
 
 // The key buffer is what the user types.
 static char key_buffer[256];
@@ -23,7 +25,7 @@ static int isLoggedIn = 0;
 void scanForInput();
 void handleBackspace();
 void handleEnter();
-void handleKeystroke(uint8_t scankey);
+void handleKeystroke(uint8_t scankey, int showInput);
 void userInput(char *input);
 void parseCommand();
 void getUserNameFromUser();
@@ -33,6 +35,7 @@ void handleTwoWordCommands(char *command, char *parm1);
 void handleThreeWordCommands(char *command, char *parm1, char *parm2);
 void logout();
 void showHelp();
+int getInformationWork(char *ptrToUpdate, int showInput);
 
 #define SC_MAX 57
 const char *sc_name[] = {"ERROR", "Esc", "1", "2", "3", "4", "5", "6",
@@ -57,13 +60,13 @@ uint8_t runShell()
     {
         while (!isLoggedIn)
         {
-            print("Please enter your username:\n");
+            print("\nPlease enter your username:\n> ");
             while (usernameFromUser[0] == '\0')
             {
                 getUserNameFromUser();
             }
 
-            print("Please enter your password:\n");
+            print("Please enter your password:\n> ");
             while (passwordFromUser[0] == '\0')
             {
                 getPasswordFromUser();
@@ -74,7 +77,7 @@ uint8_t runShell()
 
             if (!isLoggedIn)
             {
-                print("Incorrect username or password:\n");
+                printLn("Incorrect username or password:");
                 passwordFromUser[0] = '\0';
                 usernameFromUser[0] = '\0';
             }
@@ -92,72 +95,55 @@ uint8_t runShell()
 
 void getUserNameFromUser()
 {
-    while (1)
+    int gotUsername = 0;
+    while (!gotUsername)
     {
-        uint8_t scankey = port_byte_in(0x60);
-
-        if (scankey != lastScanKey)
-        {
-            lastScanKey = scankey;
-            if (scankey > SC_MAX)
-            {
-                continue;
-            }
-
-            switch (scankey)
-            {
-            case BACKSPACE:
-                handleBackspace();
-                break;
-
-            case ENTER:
-                print("\n");
-                strcpy(usernameFromUser, key_buffer);
-                key_buffer[0] = '\0';
-                //User pressed enter, get out of this function and move on to getting the password.
-                return;
-
-            default:
-                handleKeystroke(scankey);
-                break;
-            }
-        }
+        gotUsername = getInformationWork(usernameFromUser, SHOW_INPUT);
     }
 }
 
 void getPasswordFromUser()
 {
-    while (1)
+    int gotPassword = 0;
+    while (!gotPassword)
     {
-        uint8_t scankey = port_byte_in(0x60);
+        gotPassword = getInformationWork(passwordFromUser, HIDE_INPUT);
+    }
+}
 
-        if (scankey != lastScanKey)
+int getInformationWork(char *ptrToUpdate, int showInput)
+{
+    int retval = 0;
+
+    uint8_t scankey = port_byte_in(0x60);
+
+    if (scankey != lastScanKey)
+    {
+        lastScanKey = scankey;
+        if (scankey > SC_MAX)
         {
-            lastScanKey = scankey;
-            if (scankey > SC_MAX)
-            {
-                continue;
-            }
+            return retval;
+        }
 
-            switch (scankey)
-            {
-            case BACKSPACE:
-                handleBackspace();
-                break;
+        switch (scankey)
+        {
+        case BACKSPACE:
+            handleBackspace();
+            break;
 
-            case ENTER:
-                print("\n");
-                strcpy(passwordFromUser, key_buffer);
-                key_buffer[0] = '\0';
-                //User pressed enter, get out of this function and move on to getting the password.
-                return;
+        case ENTER:
+            print("\n");
+            strcpy(ptrToUpdate, key_buffer);
+            key_buffer[0] = '\0';
+            retval = 1;
+            break;
 
-            default:
-                handleKeystroke(scankey);
-                break;
-            }
+        default:
+            handleKeystroke(scankey, showInput);
+            break;
         }
     }
+    return retval;
 }
 
 void scanForInput()
@@ -185,7 +171,7 @@ void scanForInput()
             break;
 
         default:
-            handleKeystroke(scankey);
+            handleKeystroke(scankey, SHOW_INPUT);
             break;
         }
     }
@@ -208,7 +194,7 @@ void handleEnter()
 {
 }
 
-void handleKeystroke(uint8_t scankey)
+void handleKeystroke(uint8_t scankey, int showInput)
 {
     if (strlen(key_buffer) < 250)
     {
@@ -216,7 +202,11 @@ void handleKeystroke(uint8_t scankey)
         /* Remember that print only accepts char[] */
         char str[2] = {letter, '\0'};
         append(key_buffer, letter);
-        print(str);
+
+        if (showInput)
+        {
+            print(str);
+        }
     }
     else
     {
@@ -268,7 +258,7 @@ void parseCommand(char *input)
     char secondToken[255];
     memset(secondToken, '\0', 255);
     int counter = 0;
-    
+
     //Trim the user's input
     input = trim(input);
 
@@ -459,6 +449,8 @@ void handleThreeWordCommands(char *command, char *parm1, char *parm2)
 
 void logout()
 {
+    print("Good bye ");
+    printLn(usernameFromUser);
     memset(usernameFromUser, '\0', 255);
     memset(passwordFromUser, '\0', 255);
     isLoggedIn = 0;
