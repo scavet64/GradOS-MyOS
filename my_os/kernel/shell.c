@@ -25,7 +25,7 @@ static int isLoggedIn = 0;
 /* Private methods */
 
 void scanForInput();
-void handleBackspace();
+void handleBackspace(int showInput);
 void handleKeystroke(uint8_t scankey, int showInput);
 void userInput(char *input);
 void parseCommand();
@@ -150,7 +150,7 @@ int getInformationWork(char *ptrToUpdate, int showInput)
         switch (scankey)
         {
         case BACKSPACE:
-            handleBackspace();
+            handleBackspace(showInput);
             break;
 
         case ENTER:
@@ -186,7 +186,7 @@ void scanForInput()
         switch (scankey)
         {
         case BACKSPACE:
-            handleBackspace();
+            handleBackspace(SHOW_INPUT);
             break;
 
         case ENTER:
@@ -205,12 +205,16 @@ void scanForInput()
 /**
  * Handle the user hitting the backspace key
  */
-void handleBackspace()
+void handleBackspace(int showInput)
 {
+    // If the keybuffer is already empty dont keep deleting
     if (key_buffer[0] != '\0')
     {
         backspace(key_buffer);
-        printBackspace();
+        if (showInput)
+        {
+            printBackspace();
+        }
     }
     else
     {
