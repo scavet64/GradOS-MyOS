@@ -33,6 +33,7 @@ void handleTwoWordCommands(char *command, char *parm1);
 void handleThreeWordCommands(char *command, char *parm1, char *parm2);
 void handleFourWordCommands(char *command, char *parm1, char *parm2, char *parm3);
 void logout();
+void showHelp();
 
 #define SC_MAX 57
 const char *sc_name[] = {"ERROR", "Esc", "1", "2", "3", "4", "5", "6",
@@ -381,6 +382,10 @@ void handleSingleWordCommands(char *command)
     {
         logout();
     }
+    else if (strcmp(command, "HELP") == 0)
+    {
+        showHelp();
+    }
     else
     {
         print("No command found for: ");
@@ -466,4 +471,32 @@ void logout()
     memset(usernameFromUser, '\0', 255);
     memset(passwordFromUser, '\0', 255);
     isLoggedIn = 0;
+}
+
+void showHelp()
+{
+    printLn("The available commands on this OS are:");
+    printLn("\tArithmatic:");
+    printLn("\t\tADD param1 param2 ");
+    printLn("\t\t\tAdds param 1 and param2 and displays the result");
+    printLn("\t\tSUB param1 param2");
+    printLn("\t\t\tSubtracts param 2 from param1 and displays the result");
+    printLn("\t\tMULT param1 param2");
+    printLn("\t\t\tMultiplys param 1 and param2 and displays the result");
+    printLn("\t\tDIV param1 param2");
+    printLn("\t\t\tInteger Divides param 1 and param2 and displays the result.");
+
+    printLn("\tUsers:");
+    printLn("\t\tUSER REGISTER param1");
+    printLn("\t\t\tCreates a new user account with the name of param1.");
+    printLn("\t\tUSER PASSWORD param1");
+    printLn("\t\t\tModifys the password of the account matching param1");
+    printLn("\t\tUSER LIST");
+    printLn("\t\t\tLists the current users that the system knows about");
+    printLn("\t\tLOGOUT");
+    printLn("\t\t\tThis will log the user out of their session");
+
+    printLn("\tMisc:");
+    printLn("\t\tCLEAR");
+    printLn("\t\t\tThis will clear the terminal window");
 }
