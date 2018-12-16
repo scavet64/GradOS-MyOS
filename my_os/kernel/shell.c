@@ -61,8 +61,10 @@ uint8_t runShell()
 {
     printLn("Welcome to my OS :^)");
 
-    //TEST CODE:
-    addUserData("TEST", "TEST");
+    //TEST USER CODE:
+    addUserData("EDWARD", "FULLMETAL");
+    addUserData("ZEROTWO", "FRANXX");
+    addUserData("LELOUCH", "GEASS");
 
     while (1)
     {
@@ -100,9 +102,6 @@ uint8_t runShell()
             // running shell
             scanForInput();
         }
-        printLn("Broke out of shell");
-        printLn(passwordFromUser);
-        printLn(usernameFromUser);
     }
 }
 
@@ -314,7 +313,7 @@ void parseCommand(char *input)
         }
 
         // This is the ultimate hack just to get this working. I was unable to do this the way I wanted due to a memory issue.
-        // For me to declare a temp char array inside the while loop and assign its value to the overall array of pointers (string array),
+        // When I would declare a temp char array inside the while loop and assign its value to the overall array of pointers (string array),
         // it would always overwrite the previous information. After some research, it was suggested to use strdup, but to implement that,
         // I would need to implement a memory manager to malloc the memory.
         switch (counter)
@@ -355,7 +354,7 @@ void parseCommand(char *input)
         handleThreeWordCommands(firstToken, secondToken, lastTotal);
         break;
     default:
-        printLn("No command was found");
+        printLn("Please enter a valid command!");
         break;
     }
 }
@@ -405,7 +404,7 @@ void handleTwoWordCommands(char *command, char *parm1)
     }
     else
     {
-        print("No command found for: ");
+        print("No command with 1 param found for: ");
         printLn(command);
     }
 }
@@ -473,7 +472,7 @@ void handleThreeWordCommands(char *command, char *parm1, char *parm2)
     }
     else
     {
-        print("No command found for: ");
+        print("No command with two params found for: ");
         printLn(command);
     }
     return;
