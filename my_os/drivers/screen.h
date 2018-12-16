@@ -1,3 +1,6 @@
+#ifndef SCREEN_H
+#define SCREEN_H
+
 #define VGA_HEIGHT 25
 #define VGA_WIDTH 80
 #define WHITE_ON_BLACK 0x0f
@@ -16,3 +19,5 @@ void printBackspace();
 void printInt(int num);
 void printLn(char *message);
 void printIntLn(int num);
+
+#endif
