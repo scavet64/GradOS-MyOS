@@ -17,10 +17,10 @@
 //     return 0;
 // }
 
-char	*strstr(
-	  const char	*cs,		/* String to search		*/
-	  const char	*ct		/* Substring to locate		*/
-	)
+char *strstr(
+    const char *cs, /* String to search		*/
+    const char *ct  /* Substring to locate		*/
+)
 {
     char *cq;
     char *cr;

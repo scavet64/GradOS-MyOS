@@ -1,21 +1,21 @@
 #include "../libc/include/string.h"
-//#include "../drivers/screen.c"
 #include "util.h"
 #include <stdbool.h>
+#define MAX_USERS 10
 
-static char *defaultUsername = "admin";
-static char *defaultPassword = "password";
-
-static char *usernamesList[10] = {"ADMIN", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0"};
-static char *passwordsList[10] = {"PASSWORD", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0"};
+static char *usernamesList[MAX_USERS] = {"ADMIN", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0"};
+static char *passwordsList[MAX_USERS] = {"PASSWORD", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0"};
 
 void printArray();
 int countArray(char *array[]);
 
+/**
+ * Checks the passed in user data to see if it matches what the system knows about
+ */
 int checkUserData(char *username, char *password)
 {
     int i;
-    for (i = 0; i < 10; i++)
+    for (i = 0; i < MAX_USERS; i++)
     {
         if (strcmp((char *)usernamesList[i], username) == 0)
         {
@@ -37,7 +37,7 @@ int checkUserData(char *username, char *password)
 int addUserData(char *username, char *password)
 {
     int i;
-    for (i = 0; i < 10; i++)
+    for (i = 0; i < MAX_USERS; i++)
     {
         if (strcmp((char *)usernamesList[i], "\0") == 0)
         {
@@ -52,19 +52,26 @@ int addUserData(char *username, char *password)
     return false;
 }
 
+/**
+ * Prints the array of usernames to the screen
+ */
 void listAllUsers()
 {
     printArray(usernamesList);
 }
 
+/**
+ * Changes the password of the passed in username
+ */
 int changeUserPassword(char *username, char *password)
 {
     int i;
-    for (i = 0; i < 10; i++)
+    for (i = 0; i < MAX_USERS; i++)
     {
         if (strcmp((char *)usernamesList[i], username) == 0)
         {
             passwordsList[i] = (char *)password;
+            return true;
         }
     }
     return false;

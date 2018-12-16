@@ -8,7 +8,7 @@
  * Input - n: the number of characters to compare
  * Output - If the return value is less than 0 it means the character in s1 is less than the character in s2.  If it is greater than 0, the character in s1 is greater than the character in s2.  If 0, the strings are the same
  */
-int strncmp(const char * s1, const char * s2, size_t n)
+int strncmp(const char *s1, const char *s2, size_t n)
 {
     while (--n >= 0 && *s1 == *s2++)
     {

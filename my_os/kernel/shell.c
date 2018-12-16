@@ -1,6 +1,6 @@
 
 #include "../drivers/screen.h"
-#include "../drivers/ports.h"
+#include "../drivers/keyboard.h"
 #include "../libc/include/string.h"
 #include "../libc/include/strutils.h"
 #include "commands.h"
@@ -12,11 +12,13 @@
 #define ENTER 0x1C
 #define SHOW_INPUT 1
 #define HIDE_INPUT 0
+#define MAX_INPUT_LEN 250
+#define SC_MAX 57
 
-// The key buffer is what the user types.
-static char key_buffer[256];
-static char usernameFromUser[256];
-static char passwordFromUser[256];
+//Define some of our static variables that will be used
+static char key_buffer[MAX_INPUT_LEN];
+static char usernameFromUser[MAX_INPUT_LEN];
+static char passwordFromUser[MAX_INPUT_LEN];
 static uint8_t lastScanKey = 0;
 static int isLoggedIn = 0;
 
@@ -24,7 +26,6 @@ static int isLoggedIn = 0;
 
 void scanForInput();
 void handleBackspace();
-void handleEnter();
 void handleKeystroke(uint8_t scankey, int showInput);
 void userInput(char *input);
 void parseCommand();
@@ -37,7 +38,6 @@ void logout();
 void showHelp();
 int getInformationWork(char *ptrToUpdate, int showInput);
 
-#define SC_MAX 57
 const char *sc_name[] = {"ERROR", "Esc", "1", "2", "3", "4", "5", "6",
                          "7", "8", "9", "0", "-", "=", "Backspace", "Tab", "Q", "W", "E",
                          "R", "T", "Y", "U", "I", "O", "P", "[", "]", "Enter", "Lctrl",
@@ -50,9 +50,17 @@ const char sc_ascii[] = {'?', '?', '1', '2', '3', '4', '5', '6',
                          'H', 'J', 'K', 'L', ';', '\'', '`', '?', '\\', 'Z', 'X', 'C', 'V',
                          'B', 'N', 'M', ',', '.', '/', '?', '?', '?', ' '};
 
+/**
+ * Main loop of the entire shell. This will run forever.
+ * While a user is not logged on, it will prompt for a username and password
+ * 
+ * If the username and password match what is known to the system, the user is logged in and can start
+ * executing commands. 
+ */
 uint8_t runShell()
 {
     printLn("Welcome to my OS :^)");
+
     //TEST CODE:
     addUserData("TEST", "TEST");
 
@@ -81,18 +89,26 @@ uint8_t runShell()
                 passwordFromUser[0] = '\0';
                 usernameFromUser[0] = '\0';
             }
+            else
+            {
+                print("\n> ");
+            }
         }
-
-        print("\n> ");
 
         while (isLoggedIn)
         {
             // running shell
             scanForInput();
         }
+        printLn("Broke out of shell");
+        printLn(passwordFromUser);
+        printLn(usernameFromUser);
     }
 }
 
+/**
+ * Loops until the user enters a username and hits enter
+ */
 void getUserNameFromUser()
 {
     int gotUsername = 0;
@@ -102,6 +118,9 @@ void getUserNameFromUser()
     }
 }
 
+/**
+ * Loops until the user enters a password and hits enter
+ */
 void getPasswordFromUser()
 {
     int gotPassword = 0;
@@ -111,11 +130,14 @@ void getPasswordFromUser()
     }
 }
 
+/**
+ * Get the information from the user. This function can either show or hide the keyboard input
+ */
 int getInformationWork(char *ptrToUpdate, int showInput)
 {
     int retval = 0;
 
-    uint8_t scankey = port_byte_in(0x60);
+    uint8_t scankey = pollKeyboard();
 
     if (scankey != lastScanKey)
     {
@@ -146,9 +168,12 @@ int getInformationWork(char *ptrToUpdate, int showInput)
     return retval;
 }
 
+/**
+ * Scan the IO port for keyboard input. This function does not allow for the user to hold down a key.
+ */
 void scanForInput()
 {
-    uint8_t scankey = port_byte_in(0x60);
+    uint8_t scankey = pollKeyboard();
 
     if (scankey != lastScanKey)
     {
@@ -177,12 +202,15 @@ void scanForInput()
     }
 }
 
+/**
+ * Handle the user hitting the backspace key
+ */
 void handleBackspace()
 {
     if (key_buffer[0] != '\0')
     {
         backspace(key_buffer);
-        print_backspace();
+        printBackspace();
     }
     else
     {
@@ -190,13 +218,12 @@ void handleBackspace()
     }
 }
 
-void handleEnter()
-{
-}
-
+/**
+ * Handle the user's keystroke. If the showInput flag is set to false, the input will not be echoed to the user
+ */
 void handleKeystroke(uint8_t scankey, int showInput)
 {
-    if (strlen(key_buffer) < 250)
+    if (strlen(key_buffer) < MAX_INPUT_LEN)
     {
         char letter = sc_ascii[(int)scankey];
         /* Remember that print only accepts char[] */
@@ -220,12 +247,6 @@ void handleKeystroke(uint8_t scankey, int showInput)
  */
 void userInput(char *input)
 {
-    if (strcmp(input, "END") == 0)
-    {
-        printLn("Shutting down :^)");
-        asm volatile("hlt");
-    }
-
     //Check login
     if (isLoggedIn)
     {
@@ -248,7 +269,6 @@ void userInput(char *input)
  *      subtract the two
  *      do strncpy and thats what we want
  *      Add that token to an array
- * 
  */
 void parseCommand(char *input)
 {
@@ -263,8 +283,9 @@ void parseCommand(char *input)
     input = trim(input);
 
     // Start by getting the first location of a space.
-    char *subString;
-    memset(subString, '\0', 255);
+    char subStringData[255];
+    char *subString = subStringData;
+    memset(subStringData, '\0', 255);
     subString = strstr(input, " ");
 
     // Copy the input we got as the last total string we got the substring from
@@ -318,14 +339,6 @@ void parseCommand(char *input)
         counter++;
     }
 
-    // printLn("");
-
-    // printLn(firstToken);
-    // printLn(secondToken);
-    // printLn(thirdToken);
-    // printLn(fourthToken);
-    // printLn(lastTotal);
-
     switch (counter)
     {
     case 0:
@@ -338,17 +351,14 @@ void parseCommand(char *input)
         handleThreeWordCommands(firstToken, secondToken, lastTotal);
         break;
     default:
-        //error?
         printLn("No command was found");
         break;
     }
-
-    // Get the length of the total input
-    // Get the length of the 'sub' string
-    // subtract the two
-    // do strncpy and thats what we want
 }
 
+/**
+ * Handle one word commands.
+ */
 void handleSingleWordCommands(char *command)
 {
     //Check for the commands
@@ -364,6 +374,11 @@ void handleSingleWordCommands(char *command)
     {
         showHelp();
     }
+    else if (strcmp(command, "END") == 0)
+    {
+        printLn("Shutting down :^)");
+        asm volatile("hlt");
+    }
     else
     {
         print("No command found for: ");
@@ -372,6 +387,9 @@ void handleSingleWordCommands(char *command)
     return;
 }
 
+/**
+ * Handle Two word commands. This is for when there is a command and a single parameter
+ */
 void handleTwoWordCommands(char *command, char *parm1)
 {
     if (strcmp(command, "USER") == 0)
@@ -388,6 +406,9 @@ void handleTwoWordCommands(char *command, char *parm1)
     }
 }
 
+/**
+ * Handle three word commands. This is for when there is a command and two paramaters
+ */
 void handleThreeWordCommands(char *command, char *parm1, char *parm2)
 {
     //Check for the commands
@@ -412,7 +433,7 @@ void handleThreeWordCommands(char *command, char *parm1, char *parm2)
         if (strcmp(parm1, "REGISTER") == 0)
         {
             printLn("Please enter your password:");
-            memset(passwordFromUser, '\0', 255);
+            memset(passwordFromUser, '\0', MAX_INPUT_LEN);
             key_buffer[0] = '\0';
             while (passwordFromUser[0] == '\0')
             {
@@ -430,13 +451,20 @@ void handleThreeWordCommands(char *command, char *parm1, char *parm2)
         else if (strcmp(parm1, "PASSWORD") == 0)
         {
             printLn("Please enter your password:");
-            memset(passwordFromUser, '\0', 255);
+            memset(passwordFromUser, '\0', MAX_INPUT_LEN);
             key_buffer[0] = '\0';
             while (passwordFromUser[0] == '\0')
             {
                 getPasswordFromUser();
             }
-            changeUserPassword(parm2, passwordFromUser);
+            if (changeUserPassword(parm2, passwordFromUser))
+            {
+                printLn("Successfully changed user password");
+            }
+            else
+            {
+                printLn("Failed to change user password");
+            }
         }
     }
     else
@@ -447,15 +475,21 @@ void handleThreeWordCommands(char *command, char *parm1, char *parm2)
     return;
 }
 
+/**
+ * Log the current user out and clear the information
+ */
 void logout()
 {
     print("Good bye ");
     printLn(usernameFromUser);
-    memset(usernameFromUser, '\0', 255);
-    memset(passwordFromUser, '\0', 255);
+    memset(usernameFromUser, '\0', MAX_INPUT_LEN);
+    memset(passwordFromUser, '\0', MAX_INPUT_LEN);
     isLoggedIn = 0;
 }
 
+/**
+ * Show the help text to the user.
+ */
 void showHelp()
 {
     printLn("The available commands on this OS are:");
@@ -482,4 +516,6 @@ void showHelp()
     printLn("\tMisc:");
     printLn("\t\tCLEAR");
     printLn("\t\t\tThis will clear the terminal window");
+    printLn("\t\tEND");
+    printLn("\t\t\tThis will END the session");
 }

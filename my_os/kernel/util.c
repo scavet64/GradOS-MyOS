@@ -1,32 +1,19 @@
-void memory_copy(char *source, char *dest, int nbytes) {
-    int i;
-    for (i = 0; i < nbytes; i++) {
-        *(dest + i) = *(source + i);
-    }
-}
-
-void append(char s[], char n) {
-    int len = strlen(s);
-    s[len] = n;
-    s[len+1] = '\0';
-}
-
-void backspace(char s[]) {
-    int len = strlen(s);
-    s[len-1] = '\0';
-}
-
-
+/**
+ * Returns total size of an array
+ */
 int countArray(char *array[])
 {
     int i = 0;
     while (strcmp(array[i], "\0") != 0){
-        //We only want to increment i if contiditonal was successful
+        //We only want to increment i if conditional was successful
         i++;
     }
     return i;
 }
 
+/**
+ * Prints the contents of the array to the screen
+ */
 void printArray(char *array[])
 {
     print("\n");
