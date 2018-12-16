@@ -1,4 +1,5 @@
 #include "../libc/include/string.h"
+#include "../libc/include/conversion.h"
 // #include "libc/include/conversion.h"
 // #include "libc/include/strutils.h"
 // #include "libc/include/video.h"
@@ -27,7 +28,7 @@ void testScreenScroll()
 	for (i = 0; i < 24; i++)
 	{
 		char str[255];
-		int_to_ascii(i, str);
+		intToAscii(i, str);
 		print_at(str, 0, i);
 	}
 

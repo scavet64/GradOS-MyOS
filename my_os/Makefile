@@ -1,7 +1,7 @@
 CC=gcc
 TARGET=myos
 BIN=./bin/
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c libc/string/*.c libc/conversion/*.c system/*.c *.c)
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c libc/string/*.c  libc/conversion/*.c system/*.c *.c)
 HEADERS = $(wildcard kernel/*.h drivers/*.h include/*.h system/*.h)
 OBJS=$(C_SOURCES:.c=.o)
 

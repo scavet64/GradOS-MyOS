@@ -1,4 +1,5 @@
 #include "util.h"
+#include "../libc/include/conversion.h"
 #include "../drivers/screen.h"
 
 int add(char *parm1, char *parm2){

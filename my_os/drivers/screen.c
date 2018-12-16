@@ -1,6 +1,7 @@
 #include "screen.h"
 #include "ports.h"
 #include "../kernel/util.h"
+#include "../libc/include/conversion.h"
 
 static char *const VIDEO_ADDRESS = (char *)0xb8000;
 
@@ -70,7 +71,7 @@ void print_backspace()
 void printInt(int num)
 {
     char *str;
-    int_to_ascii(num, str);
+    intToAscii(num, str);
     print(str);
 }
 

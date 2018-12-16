@@ -1,1 +1,3 @@
-void int_to_ascii(int n, char str[]);
+int atoi(char *str);
+void reverse(char s[]);
+void intToAscii(int n, char str[]);
