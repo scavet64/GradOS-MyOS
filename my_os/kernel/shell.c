@@ -10,6 +10,8 @@
 
 #define BACKSPACE 0x0E
 #define ENTER 0x1C
+#define LEFTSHIFT 0x2A
+#define LEFTSHIFTUP 0xAA
 #define SHOW_INPUT 1
 #define HIDE_INPUT 0
 #define MAX_INPUT_LEN 250
@@ -20,6 +22,7 @@ static char key_buffer[MAX_INPUT_LEN];
 static char usernameFromUser[MAX_INPUT_LEN];
 static char passwordFromUser[MAX_INPUT_LEN];
 static uint8_t lastScanKey = 0;
+static int shiftDown = 0;
 static int isLoggedIn = 0;
 
 /* Private methods */
@@ -44,11 +47,16 @@ const char *sc_name[] = {"ERROR", "Esc", "1", "2", "3", "4", "5", "6",
                          "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", "`",
                          "LShift", "\\", "Z", "X", "C", "V", "B", "N", "M", ",", ".",
                          "/", "RShift", "Keypad *", "LAlt", "Spacebar"};
-const char sc_ascii[] = {'?', '?', '1', '2', '3', '4', '5', '6',
-                         '7', '8', '9', '0', '-', '=', '?', '?', 'Q', 'W', 'E', 'R', 'T', 'Y',
-                         'U', 'I', 'O', 'P', '[', ']', '?', '?', 'A', 'S', 'D', 'F', 'G',
-                         'H', 'J', 'K', 'L', ';', '\'', '`', '?', '\\', 'Z', 'X', 'C', 'V',
-                         'B', 'N', 'M', ',', '.', '/', '?', '?', '?', ' '};
+const char up_ascii[] = {'\0', '\0', '!', '@', '#', '$', '%', '^',
+                         '&', '*', '(', ')', '_', '+', '\0', '\0', 'Q', 'W', 'E', 'R', 'T', 'Y',
+                         'U', 'I', 'O', 'P', '{', '}', '\0', '\0', 'A', 'S', 'D', 'F', 'G',
+                         'H', 'J', 'K', 'L', ':', '\"', '~', '\0', '|', 'Z', 'X', 'C', 'V',
+                         'B', 'N', 'M', '<', '>', '?', '\0', '\0', '\0', ' '};
+const char sc_ascii[] = {'\0', '\0', '1', '2', '3', '4', '5', '6',
+                         '7', '8', '9', '0', '-', '=', '\0', '\0', 'q', 'w', 'e', 'r', 't', 'y',
+                         'u', 'i', 'o', 'p', '[', ']', '\0', '\0', 'a', 's', 'd', 'f', 'g',
+                         'h', 'j', 'k', 'l', ';', '\'', '`', '\0', '\\', 'z', 'x', 'c', 'v',
+                         'b', 'n', 'm', ',', '.', '/', '\0', '\0', '\0', ' '};
 
 /**
  * Main loop of the entire shell. This will run forever.
@@ -62,9 +70,9 @@ uint8_t runShell()
     printLn("Welcome to my OS :^)");
 
     //TEST USER CODE:
-    addUserData("EDWARD", "FULLMETAL");
-    addUserData("ZEROTWO", "FRANXX");
-    addUserData("LELOUCH", "GEASS");
+    addUserData("Edward", "fullmetal");
+    addUserData("ZeroTwo", "franxx");
+    addUserData("LeLouch", "geass");
 
     while (1)
     {
@@ -130,7 +138,7 @@ void getPasswordFromUser()
 }
 
 /**
- * Get the information from the user. This function can either show or hide the keyboard input
+ * Get the information from the user. This function can either show or hide the keyboard input. TODO Refactor this and scanForInput into one method
  */
 int getInformationWork(char *ptrToUpdate, int showInput)
 {
@@ -141,6 +149,13 @@ int getInformationWork(char *ptrToUpdate, int showInput)
     if (scankey != lastScanKey)
     {
         lastScanKey = scankey;
+
+        //Check for left shift up specifically since its the only one we care about coming back up
+        if (scankey == LEFTSHIFTUP)
+        {
+            shiftDown = 0;
+        }
+
         if (scankey > SC_MAX)
         {
             return retval;
@@ -148,6 +163,9 @@ int getInformationWork(char *ptrToUpdate, int showInput)
 
         switch (scankey)
         {
+        case LEFTSHIFT:
+            shiftDown = 1;
+            break;
         case BACKSPACE:
             handleBackspace(showInput);
             break;
@@ -177,6 +195,13 @@ void scanForInput()
     if (scankey != lastScanKey)
     {
         lastScanKey = scankey;
+
+        //Check for left shift up specifically since its the only one we care about coming back up
+        if (scankey == LEFTSHIFTUP)
+        {
+            shiftDown = 0;
+        }
+
         if (scankey > SC_MAX)
         {
             return;
@@ -184,6 +209,9 @@ void scanForInput()
 
         switch (scankey)
         {
+        case LEFTSHIFT:
+            shiftDown = 1;
+            break;
         case BACKSPACE:
             handleBackspace(SHOW_INPUT);
             break;
@@ -228,7 +256,21 @@ void handleKeystroke(uint8_t scankey, int showInput)
 {
     if (strlen(key_buffer) < MAX_INPUT_LEN)
     {
-        char letter = sc_ascii[(int)scankey];
+        char letter;
+        if (shiftDown)
+        {
+            letter = up_ascii[(int)scankey];
+        }
+        else
+        {
+            letter = sc_ascii[(int)scankey];
+        }
+
+        if (letter == '\0') {
+            //Do nothing
+            return;
+        }
+
         /* Remember that print only accepts char[] */
         char str[2] = {letter, '\0'};
         append(key_buffer, letter);
