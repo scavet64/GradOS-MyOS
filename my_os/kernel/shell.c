@@ -407,19 +407,19 @@ void parseCommand(char *input)
 void handleSingleWordCommands(char *command)
 {
     //Check for the commands
-    if (strcmp(command, "CLEAR") == 0)
+    if (strcmp(command, "Clear") == 0)
     {
         clearScreen();
     }
-    else if (strcmp(command, "LOGOUT") == 0)
+    else if (strcmp(command, "Logout") == 0)
     {
         logout();
     }
-    else if (strcmp(command, "HELP") == 0)
+    else if (strcmp(command, "Help") == 0)
     {
         showHelp();
     }
-    else if (strcmp(command, "END") == 0)
+    else if (strcmp(command, "End") == 0)
     {
         printLn("Shutting down :^)");
         asm volatile("hlt");
@@ -437,9 +437,9 @@ void handleSingleWordCommands(char *command)
  */
 void handleTwoWordCommands(char *command, char *parm1)
 {
-    if (strcmp(command, "USER") == 0)
+    if (strcmp(command, "User") == 0)
     {
-        if (strcmp(parm1, "LIST") == 0)
+        if (strcmp(parm1, "List") == 0)
         {
             listAllUsers();
         }
@@ -457,25 +457,25 @@ void handleTwoWordCommands(char *command, char *parm1)
 void handleThreeWordCommands(char *command, char *parm1, char *parm2)
 {
     //Check for the commands
-    if (strcmp(command, "ADD") == 0)
+    if (strcmp(command, "Add") == 0)
     {
         add(parm1, parm2);
     }
-    else if (strcmp(command, "SUB") == 0)
+    else if (strcmp(command, "Sub") == 0)
     {
         sub(parm1, parm2);
     }
-    else if (strcmp(command, "MULT") == 0)
+    else if (strcmp(command, "Mult") == 0)
     {
         mult(parm1, parm2);
     }
-    else if (strcmp(command, "DIV") == 0)
+    else if (strcmp(command, "Div") == 0)
     {
         div(parm1, parm2);
     }
-    else if (strcmp(command, "USER") == 0)
+    else if (strcmp(command, "User") == 0)
     {
-        if (strcmp(parm1, "REGISTER") == 0)
+        if (strcmp(parm1, "Register") == 0)
         {
             printLn("Please enter your password:");
             memset(passwordFromUser, '\0', MAX_INPUT_LEN);
@@ -493,7 +493,7 @@ void handleThreeWordCommands(char *command, char *parm1, char *parm2)
                 printLn("Failed to add new user");
             }
         }
-        else if (strcmp(parm1, "PASSWORD") == 0)
+        else if (strcmp(parm1, "Password") == 0)
         {
             printLn("Please enter your password:");
             memset(passwordFromUser, '\0', MAX_INPUT_LEN);
@@ -539,28 +539,28 @@ void showHelp()
 {
     printLn("The available commands on this OS are:");
     printLn("\tArithmatic:");
-    printLn("\t\tADD param1 param2 ");
+    printLn("\t\tAdd param1 param2 ");
     printLn("\t\t\tAdds param 1 and param2 and displays the result");
-    printLn("\t\tSUB param1 param2");
+    printLn("\t\tSub param1 param2");
     printLn("\t\t\tSubtracts param 2 from param1 and displays the result");
-    printLn("\t\tMULT param1 param2");
+    printLn("\t\tMult param1 param2");
     printLn("\t\t\tMultiplys param 1 and param2 and displays the result");
-    printLn("\t\tDIV param1 param2");
+    printLn("\t\tDiv param1 param2");
     printLn("\t\t\tInteger Divides param 1 and param2 and displays the result.");
 
     printLn("\tUsers:");
-    printLn("\t\tUSER REGISTER param1");
+    printLn("\t\tUser Register param1");
     printLn("\t\t\tCreates a new user account with the name of param1.");
-    printLn("\t\tUSER PASSWORD param1");
+    printLn("\t\tUser Password param1");
     printLn("\t\t\tModifys the password of the account matching param1");
-    printLn("\t\tUSER LIST");
+    printLn("\t\tUser List");
     printLn("\t\t\tLists the current users that the system knows about");
-    printLn("\t\tLOGOUT");
+    printLn("\t\tLogout");
     printLn("\t\t\tThis will log the user out of their session");
 
     printLn("\tMisc:");
-    printLn("\t\tCLEAR");
+    printLn("\t\tClear");
     printLn("\t\t\tThis will clear the terminal window");
-    printLn("\t\tEND");
+    printLn("\t\tEnd");
     printLn("\t\t\tThis will END the session");
 }
